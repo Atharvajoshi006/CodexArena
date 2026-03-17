@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodexArena — Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --accent: #7c3aed;
+    --accent2: #a78bfa;
+    --green: #34d399;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --error: #f87171;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'DM Mono', monospace;
+    color: var(--text);
+    overflow: hidden;
+    display: flex;
+  }
+
+  /* ── MESH BACKGROUND ── */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 80% at 10% 20%, #1e0a3c 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 85% 10%, #0f2a4a 0%, transparent 55%),
+      radial-gradient(ellipse 70% 70% at 50% 90%, #0a1f1a 0%, transparent 60%),
+      #060810;
+  }
+
+  /* floating blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width:420px;height:420px;background:#5b21b6;top:-80px;left:10%; animation:float1 14s ease-in-out infinite alternate; }
+  .blob-2 { width:300px;height:300px;background:#0d4f3c;bottom:5%;right:45%; animation:float2 18s ease-in-out infinite alternate; }
+  .blob-3 { width:260px;height:260px;background:#1e3a5f;top:30%;right:5%; animation:float3 16s ease-in-out infinite alternate; }
+
+  @keyframes float1 { to { transform: translate(30px,50px) scale(1.05); } }
+  @keyframes float2 { to { transform: translate(-40px,-30px) scale(0.95); } }
+  @keyframes float3 { to { transform: translate(20px,40px); } }
+
+  /* ── LAYOUT ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 48px;
+    border-right: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(2px);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .logo-b { color: var(--accent2); }
+  .logo-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-left: 5px;
+    animation: blink 2.5s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .left-body { max-width: 440px; }
+
+  .left-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+    border: 1px solid rgba(52,211,153,0.18);
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+
+  .left-body h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    letter-spacing: -1px;
+  }
+
+  .left-body h1 span {
+    background: linear-gradient(135deg, var(--accent2), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .left-body p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 340px;
+    margin-bottom: 48px;
+  }
+
+  /* perks list */
+  .perks { display: flex; flex-direction: column; gap: 16px; }
+  .perk {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .perk-icon {
+    width: 34px; height: 34px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+  }
+
+  .left-footer { font-size: 11px; color: rgba(148,163,184,0.4); }
+
+  /* ── RIGHT PANEL ── */
+  .right {
+    width: 460px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px;
+  }
+
+  .glass-card {
+    width: 100%;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: slideIn 0.5s ease both;
+  }
+  @keyframes slideIn {
+    from { opacity:0; transform:translateX(20px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+
+  .card-head { margin-bottom: 26px; }
+  .card-head h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 5px;
+  }
+  .card-head p { font-size: 12px; color: var(--muted); }
+
+  /* fields */
+  .fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+
+  label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .iw { position: relative; }
+
+  input[type=text],
+  input[type=email],
+  input[type=password] {
+    width: 100%;
+    padding: 10px 36px 10px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 9px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  input::placeholder { color: rgba(148,163,184,0.35); }
+  input:focus {
+    border-color: rgba(167,139,250,0.5);
+    background: rgba(124,58,237,0.07);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+  }
+  input.valid   { border-color: rgba(52,211,153,0.4); }
+  input.invalid { border-color: rgba(248,113,113,0.35); }
+
+  .eye {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 13px; padding: 0; line-height: 1;
+    transition: color 0.2s;
+  }
+  .eye:hover { color: var(--text); }
+
+  /* strength */
+  .sbar { display:flex; gap:3px; margin-top:5px; }
+  .seg {
+    height: 2px; flex:1; border-radius:2px;
+    background: rgba(255,255,255,0.07);
+    transition: background 0.3s;
+  }
+
+  .hint { font-size: 11px; color: var(--error); min-height: 13px; }
+
+  /* submit */
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--accent), #6d28d9);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+  }
+  .btn:hover { opacity:0.9; transform:translateY(-1px); box-shadow: 0 6px 24px rgba(124,58,237,0.45); }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+  .card-foot {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .card-foot a { color: var(--accent2); text-decoration: none; }
+  .card-foot a:hover { color: var(--text); }
+
+  /* success */
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 24px 0;
+    animation: slideIn 0.4s ease both;
+  }
+  .success-state .tick {
+    width: 52px; height: 52px;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 18px;
+  }
+  .success-state h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 800;
+    color: var(--green); margin-bottom: 8px;
+  }
+  .success-state p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* responsive */
+  @media (max-width: 820px) {
+    .left { display: none; }
+    .right { width: 100%; padding: 24px 20px; }
+    body { overflow: auto; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="bg"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="page">
+
+    <div class="left">
+      <a href="index.html" class="logo">
+        <span class="logo-b">{</span>CodexArena<span class="logo-b">}</span>
+        <span class="logo-dot"></span>
+      </a>
+
+      <div class="left-body">
+        <div class="left-tag">Developer Platform</div>
+        <h1>Your arena<br>awaits, <span>dev.</span></h1>
+        <p>Discover hackathons, compete with the best, and share your journey with a community that gets it.</p>
+
+        <div class="perks">
+          <div class="perk">
+            <div class="perk-icon">⚡</div>
+            Access 50+ live hackathons instantly
+          </div>
+          <div class="perk">
+            <div class="perk-icon">🏆</div>
+            Compete for prizes worth ₹3L+
+          </div>
+          <div class="perk">
+            <div class="perk-icon">✍️</div>
+            Publish blogs and build your dev profile
+          </div>
+          <div class="perk">
+            <div class="perk-icon">🤝</div>
+            Connect with teams and collaborators
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">© 2026 CodexArena · Built at SJCIT AIML</div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="glass-card">
+
+        <div id="formState">
+          <div class="card-head">
+            <h2>Create account</h2>
+            <p>Join the arena — it's free.</p>
+          </div>
+
+          <form id="signupForm" novalidate>
+            <div class="fields">
+
+              <div class="field">
+                <label>Full Name</label>
+                <div class="iw">
+                  <input type="text" id="name" placeholder="Enter name" autocomplete="name">
+                </div>
+                <span class="hint" id="nameHint"></span>
+              </div>
+
+              <div class="field">
+                <label>Email</label>
+                <div class="iw">
+                  <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+                </div>
+                <span class="hint" id="emailHint"></span>
+              </div>
+
+              <div class="field">
+                <label>Password</label>
+                <div class="iw">
+                  <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password">
+                  <button type="button" class="eye" onclick="togglePwd('password',this)">👁</button>
+                </div>
+                <div class="sbar">
+                  <div class="seg" id="s1"></div>
+                  <div class="seg" id="s2"></div>
+                  <div class="seg" id="s3"></div>
+                  <div class="seg" id="s4"></div>
+                </div>
+                <span class="hint" id="passwordHint"></span>
+              </div>
+
+              <div class="field">
+                <label>Confirm Password</label>
+                <div class="iw">
+                  <input type="password" id="confirmPassword" placeholder="Re-enter password" autocomplete="new-password">
+                  <button type="button" class="eye" onclick="togglePwd('confirmPassword',this)">👁</button>
+                </div>
+                <span class="hint" id="confirmHint"></span>
+              </div>
+
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">Create Account →</button>
+          </form>
+
+          <div class="card-foot">
+            Already have an account? <a href="login.html">Sign in</a>
+          </div>
+        </div>
+
+        <div class="success-state" id="successState">
+          <div class="tick">✓</div>
+          <h2>You're in!</h2>
+          <p>Account created successfully.<br>Welcome to the arena, dev.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function togglePwd(id, btn) {
+      const el = document.getElementById(id);
+      const show = el.type === 'password';
+      el.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁';
+    }
+
+    const sc = ['#ef4444','#f97316','#eab308','#34d399'];
+
+    document.getElementById('password').addEventListener('input', function () {
+      const v = this.value;
+      let s = 0;
+      if (v.length >= 8) s++;
+      if (/[A-Z]/.test(v)) s++;
+      if (/[0-9]/.test(v)) s++;
+      if (/[^A-Za-z0-9]/.test(v)) s++;
+      for (let i = 1; i <= 4; i++)
+        document.getElementById('s'+i).style.background = i <= s ? sc[s-1] : 'rgba(255,255,255,0.07)';
+    });
+
+    document.getElementById('confirmPassword').addEventListener('input', function () {
+      const match = this.value === document.getElementById('password').value;
+      const hint = document.getElementById('confirmHint');
+      if (this.value && !match) {
+        hint.textContent = 'Passwords do not match';
+        this.classList.add('invalid'); this.classList.remove('valid');
+      } else if (this.value && match) {
+        hint.textContent = '';
+        this.classList.add('valid'); this.classList.remove('invalid');
+      } else {
+        hint.textContent = ''; this.classList.remove('valid','invalid');
+      }
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      let ok = true;
+
+      const n = document.getElementById('name');
+      const em = document.getElementById('email');
+      const pw = document.getElementById('password');
+      const cp = document.getElementById('confirmPassword');
+
+      ['nameHint','emailHint','passwordHint','confirmHint'].forEach(id =>
+        document.getElementById(id).textContent = '');
+
+      if (!n.value.trim()) {
+        document.getElementById('nameHint').textContent = 'Name is required';
+        n.classList.add('invalid'); ok = false;
+      } else { n.classList.remove('invalid'); }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)) {
+        document.getElementById('emailHint').textContent = 'Enter a valid email';
+        em.classList.add('invalid'); ok = false;
+      } else { em.classList.remove('invalid'); }
+
+      if (pw.value.length < 8) {
+        document.getElementById('passwordHint').textContent = 'At least 8 characters required';
+        pw.classList.add('invalid'); ok = false;
+      } else { pw.classList.remove('invalid'); }
+
+      if (pw.value !== cp.value) {
+        document.getElementById('confirmHint').textContent = 'Passwords do not match';
+        cp.classList.add('invalid'); ok = false;
+      }
+
+      if (!ok) return;
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating…';
+
+      setTimeout(() => {
+        document.getElementById('formState').style.display = 'none';
+        document.getElementById('successState').style.display = 'block';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
