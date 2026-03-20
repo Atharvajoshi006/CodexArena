@@ -1,0 +1,1842 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodexArena — Profile</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080c14;
+        --line: rgba(255, 255, 255, 0.06);
+        --accent: #7c3aed;
+        --accent2: #a78bfa;
+        --green: #34d399;
+        --pink: #f472b6;
+        --text: #e8edf5;
+        --muted: #4b5675;
+        --muted2: #8892a4;
+        --glass: rgba(255, 255, 255, 0.04);
+        --glass-b: rgba(255, 255, 255, 0.08);
+        --hover: rgba(255, 255, 255, 0.025);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 999;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+      }
+
+      .shell {
+        display: flex;
+        width: 100%;
+        max-width: 1080px;
+        min-height: 100vh;
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--line);
+        padding: 28px 16px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        overflow-y: auto;
+      }
+      .logo {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 17px;
+        text-decoration: none;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 8px 10px;
+        margin-bottom: 16px;
+      }
+      .lb {
+        color: var(--accent2);
+      }
+      .ld {
+        width: 6px;
+        height: 6px;
+        background: var(--green);
+        border-radius: 50%;
+        margin-left: 5px;
+        animation: blink 2.5s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--muted2);
+        font-size: 13px;
+        transition: all 0.15s;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .nav-item:hover {
+        background: var(--hover);
+        color: var(--text);
+      }
+      .nav-item.active {
+        color: var(--text);
+        background: var(--hover);
+      }
+      .nav-icon {
+        font-size: 15px;
+        width: 20px;
+        text-align: center;
+      }
+      .sidebar-div {
+        height: 1px;
+        background: var(--line);
+        margin: 10px 0;
+      }
+
+      /* ── MAIN ── */
+      .main {
+        flex: 1;
+        border-right: 1px solid var(--line);
+        min-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 14px 20px;
+        background: rgba(8, 12, 20, 0.92);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .back-btn {
+        background: none;
+        border: none;
+        color: var(--muted2);
+        font-size: 16px;
+        cursor: pointer;
+        transition: color 0.15s;
+        padding: 4px;
+      }
+      .back-btn:hover {
+        color: var(--text);
+      }
+      .topbar-info h2 {
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+      }
+      .topbar-info span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      /* banner */
+      .banner {
+        height: 140px;
+        background: linear-gradient(
+          135deg,
+          #1a0a3a 0%,
+          #0d1f3c 40%,
+          #0a1f1a 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+      .banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(124, 58, 237, 0.08) 1px, transparent 1px);
+        background-size: 32px 32px;
+      }
+      .banner-edit {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--glass-b);
+        color: var(--muted2);
+        font-size: 12px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        font-family: "JetBrains Mono", monospace;
+        transition: all 0.2s;
+      }
+      .banner-edit:hover {
+        color: var(--text);
+        border-color: var(--accent2);
+      }
+
+      .profile-top {
+        padding: 0 24px;
+        position: relative;
+        margin-bottom: 16px;
+      }
+      .avatar-wrap {
+        position: absolute;
+        top: -44px;
+        left: 24px;
+      }
+      .avatar {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        border: 4px solid var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: white;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+      }
+      .avatar:hover .avatar-overlay {
+        opacity: 1;
+      }
+      .avatar-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .profile-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 14px;
+        gap: 8px;
+      }
+      .btn-edit-profile {
+        padding: 7px 18px;
+        background: none;
+        border: 1px solid var(--glass-b);
+        color: var(--text);
+        border-radius: 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-edit-profile:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      .profile-info {
+        padding: 52px 24px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+      .profile-name {
+        font-family: "Syne", sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 2px;
+      }
+      .profile-handle {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .profile-bio {
+        font-size: 13px;
+        color: var(--muted2);
+        line-height: 1.65;
+        margin-bottom: 12px;
+        max-width: 480px;
+      }
+      .profile-meta {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .skills-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .skill-chip {
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 5px;
+        background: rgba(124, 58, 237, 0.1);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+        color: var(--accent2);
+      }
+
+      /* ── STATS (clickable) ── */
+      .stats-row {
+        display: flex;
+        border-bottom: 1px solid var(--line);
+      }
+      .stat {
+        flex: 1;
+        padding: 14px 0;
+        text-align: center;
+        border-right: 1px solid var(--line);
+        transition: background 0.15s;
+      }
+      .stat:last-child {
+        border-right: none;
+      }
+      .stat.clickable {
+        cursor: pointer;
+      }
+      .stat.clickable:hover {
+        background: var(--hover);
+      }
+      .stat-num {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        display: block;
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .stat.clickable .stat-label {
+        color: var(--accent2);
+      }
+
+      /* tabs */
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: 57px;
+        z-index: 9;
+        background: rgba(8, 12, 20, 0.92);
+        backdrop-filter: blur(16px);
+      }
+      .tab {
+        flex: 1;
+        padding: 14px 0;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        letter-spacing: 0.04em;
+      }
+      .tab:hover {
+        color: var(--text);
+        background: var(--hover);
+      }
+      .tab.active {
+        color: var(--text);
+        border-bottom-color: var(--accent2);
+      }
+
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* posts */
+      .post {
+        display: flex;
+        gap: 12px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .post:hover {
+        background: var(--hover);
+      }
+      .p-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+      }
+      .p-body {
+        flex: 1;
+      }
+      .p-header {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
+      }
+      .p-name {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .p-handle {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .p-time {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .p-time::before {
+        content: "·";
+        margin-right: 6px;
+      }
+      .p-text {
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.65;
+        margin-bottom: 10px;
+      }
+      .p-tag {
+        display: inline-block;
+        font-size: 11px;
+        padding: 2px 9px;
+        border-radius: 4px;
+        background: rgba(124, 58, 237, 0.1);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+        color: var(--accent2);
+        margin-bottom: 10px;
+      }
+      .p-actions {
+        display: flex;
+        gap: 20px;
+      }
+      .act-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        padding: 4px 0;
+        transition: color 0.15s;
+      }
+      .act-btn:hover {
+        color: var(--pink);
+      }
+      .act-btn.liked {
+        color: var(--pink);
+      }
+      .act-icon {
+        font-size: 14px;
+        transition: transform 0.15s;
+      }
+      .act-btn:hover .act-icon,
+      .act-btn.liked .act-icon {
+        transform: scale(1.2);
+      }
+
+      /* hackathons */
+      .hack-list {
+        padding: 8px 0;
+      }
+      .hack-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .hack-item:hover {
+        background: var(--hover);
+      }
+      .hack-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        border: 1px solid var(--glass-b);
+      }
+      .hack-info {
+        flex: 1;
+      }
+      .hack-name {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 3px;
+      }
+      .hack-org {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .hack-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+      .badge-won {
+        background: rgba(52, 211, 153, 0.1);
+        border: 1px solid rgba(52, 211, 153, 0.25);
+        color: var(--green);
+      }
+      .badge-part {
+        background: rgba(124, 58, 237, 0.1);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+        color: var(--accent2);
+      }
+      .badge-top {
+        background: rgba(251, 191, 36, 0.1);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+      }
+
+      /* ── FOLLOWERS / FOLLOWING MODAL ── */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(6px);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .overlay.open {
+        display: flex;
+      }
+
+      .modal {
+        width: 100%;
+        max-width: 420px;
+        background: #0e1622;
+        border: 1px solid var(--glass-b);
+        border-radius: 18px;
+        position: relative;
+        box-shadow:
+          0 24px 64px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        animation: pop 0.3s ease both;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .modal::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        border-radius: 18px 18px 0 0;
+        background: linear-gradient(
+          to right,
+          var(--accent),
+          var(--accent2),
+          var(--green)
+        );
+        z-index: 1;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 2;
+        background: var(--glass);
+        border: 1px solid var(--glass-b);
+        color: var(--muted2);
+        font-size: 13px;
+        cursor: pointer;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .modal-close:hover {
+        color: var(--text);
+      }
+
+      /* modal inner tabs */
+      .modal-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--line);
+        padding-top: 16px;
+        flex-shrink: 0;
+      }
+      .modal-tab {
+        flex: 1;
+        padding: 12px 0;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        letter-spacing: 0.04em;
+      }
+      .modal-tab:hover {
+        color: var(--text);
+      }
+      .modal-tab.active {
+        color: var(--text);
+        border-bottom-color: var(--accent2);
+      }
+
+      /* user list */
+      .user-list {
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .user-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .user-item:hover {
+        background: var(--hover);
+      }
+      .user-item:last-child {
+        border-bottom: none;
+      }
+
+      .u-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: white;
+      }
+      .u-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .u-name {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .u-handle {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .u-bio {
+        font-size: 11px;
+        color: var(--muted2);
+        margin-top: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .btn-follow {
+        flex-shrink: 0;
+        font-size: 11px;
+        padding: 5px 14px;
+        border: 1px solid var(--glass-b);
+        border-radius: 20px;
+        background: none;
+        color: var(--text);
+        cursor: pointer;
+        font-family: "JetBrains Mono", monospace;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .btn-follow:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .btn-follow.following {
+        background: rgba(124, 58, 237, 0.12);
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      .u-search {
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--line);
+        flex-shrink: 0;
+      }
+      .u-search input {
+        width: 100%;
+        background: var(--glass);
+        border: 1px solid var(--glass-b);
+        border-radius: 7px;
+        padding: 8px 12px;
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .u-search input:focus {
+        border-color: rgba(124, 58, 237, 0.4);
+      }
+      .u-search input::placeholder {
+        color: var(--muted);
+      }
+
+      .u-empty {
+        padding: 40px 20px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* ── EDIT MODAL ── */
+      .edit-modal {
+        width: 100%;
+        max-width: 480px;
+        background: #0e1622;
+        border: 1px solid var(--glass-b);
+        border-radius: 18px;
+        padding: 32px;
+        position: relative;
+        box-shadow:
+          0 24px 64px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        animation: pop 0.3s ease both;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .edit-modal::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        border-radius: 18px 18px 0 0;
+        background: linear-gradient(
+          to right,
+          var(--accent),
+          var(--accent2),
+          var(--green)
+        );
+      }
+      .edit-modal h2 {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+      .edit-modal .sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .mfields {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .mfield {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .mfield label {
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .mfield input,
+      .mfield textarea {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--glass-b);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+        padding: 9px 12px;
+      }
+      .mfield input:focus,
+      .mfield textarea:focus {
+        border-color: rgba(124, 58, 237, 0.45);
+        background: rgba(124, 58, 237, 0.05);
+      }
+      .mfield input::placeholder,
+      .mfield textarea::placeholder {
+        color: rgba(100, 116, 139, 0.4);
+      }
+      .mfield textarea {
+        resize: vertical;
+        min-height: 72px;
+        line-height: 1.6;
+      }
+      .skills-input-wrap {
+        display: flex;
+        gap: 8px;
+      }
+      .skills-input-wrap input {
+        flex: 1;
+      }
+      .btn-add-skill {
+        padding: 9px 14px;
+        background: var(--glass);
+        border: 1px solid var(--glass-b);
+        color: var(--muted2);
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .btn-add-skill:hover {
+        color: var(--text);
+        border-color: var(--accent2);
+      }
+      .skills-edit-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .skill-edit-chip {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        padding: 3px 8px 3px 10px;
+        border-radius: 5px;
+        background: rgba(124, 58, 237, 0.1);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+        color: var(--accent2);
+      }
+      .skill-remove {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 12px;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+      .skill-remove:hover {
+        color: var(--pink);
+      }
+      .modal-btns {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .btn-save {
+        flex: 1;
+        padding: 10px;
+        background: linear-gradient(135deg, var(--accent), #6d28d9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+      }
+      .btn-save:hover {
+        opacity: 0.88;
+      }
+      .btn-cancel {
+        padding: 10px 18px;
+        background: var(--glass);
+        border: 1px solid var(--glass-b);
+        color: var(--muted2);
+        border-radius: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-cancel:hover {
+        color: var(--text);
+      }
+
+      /* right panel */
+      .right-panel {
+        width: 260px;
+        flex-shrink: 0;
+        padding: 20px 14px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .panel-block {
+        background: var(--glass);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .panel-block h3 {
+        font-family: "Syne", sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 12px;
+      }
+      .panel-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .panel-stat:last-child {
+        border-bottom: none;
+      }
+      .panel-stat-label {
+        font-size: 12px;
+        color: var(--muted2);
+      }
+      .panel-stat-val {
+        font-family: "Syne", sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      @media (max-width: 900px) {
+        .right-panel {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .sidebar {
+          width: 54px;
+          padding: 14px 6px;
+        }
+        .nav-item span:not(.nav-icon) {
+          display: none;
+        }
+        .logo span:not(.lb):not(.ld) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <a href="index.html" class="logo">
+          <span class="lb">{</span><span>CodexArena</span
+          ><span class="lb">}</span>
+          <span class="ld"></span>
+        </a>
+        <a href="index.html" class="nav-item"
+          ><span class="nav-icon">⌂</span><span>Home</span></a
+        >
+        <a href="blogs.html" class="nav-item"
+          ><span class="nav-icon"></span><span>Blogs</span></a
+        >
+        <a href="hackathons.html" class="nav-item"
+          ><span class="nav-icon"></span><span>Hackathons</span></a
+        >
+        <a href="profile.html" class="nav-item active"
+          ><span class="nav-icon">◉</span><span>Profile</span></a
+        >
+        <div class="sidebar-div"></div>
+        <a href="signup.html" class="nav-item"
+          ><span class="nav-icon">→</span><span>Sign out</span></a
+        >
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="topbar">
+          <button class="back-btn" onclick="history.back()">←</button>
+          <div class="topbar-info">
+            <h2 id="topbarName">Atharva Joshi</h2>
+            <span id="topbarPosts">6 posts</span>
+          </div>
+        </div>
+
+        <div class="banner">
+          <button class="banner-edit" onclick="openEditModal()">
+            ✎ Edit profile
+          </button>
+        </div>
+
+        <div class="profile-top">
+          <div class="avatar-wrap">
+            <div class="avatar" onclick="openEditModal()">
+              <span id="avatarInitials">AJ</span>
+              <div class="avatar-overlay">✎</div>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-edit-profile" onclick="openEditModal()">
+              ✎ Edit profile
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">Atharva Joshi</div>
+          <div class="profile-handle" id="profileHandle">
+            @atharva · AIML, SJCIT
+          </div>
+          <div class="profile-bio" id="profileBio">
+            Building cool stuff and competing in hackathons. AIML student @
+            SJCIT. Creator of CodexArena.
+          </div>
+          <div class="profile-meta">
+            <div class="meta-item">
+              <span>◎</span><span id="profileLocation">Bengaluru, IN</span>
+            </div>
+            <div class="meta-item">
+              <span>◈</span><span id="profileJoined">Joined March 2026</span>
+            </div>
+          </div>
+          <div class="skills-row" id="skillsRow"></div>
+        </div>
+
+        <!-- STATS — followers/following are clickable -->
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-num" id="statPosts">6</span>
+            <span class="stat-label">posts</span>
+          </div>
+          <div class="stat clickable" onclick="openFollowModal('followers')">
+            <span class="stat-num" id="statFollowers">248</span>
+            <span class="stat-label">followers</span>
+          </div>
+          <div class="stat clickable" onclick="openFollowModal('following')">
+            <span class="stat-num" id="statFollowing">91</span>
+            <span class="stat-label">following</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="statLikes">493</span>
+            <span class="stat-label">likes</span>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this, 'posts')">
+            # posts
+          </div>
+          <div class="tab" onclick="switchTab(this, 'hackathons')">
+            ⚡ hackathons
+          </div>
+        </div>
+
+        <div id="tab-posts" class="tab-content active">
+          <div id="postsList"></div>
+        </div>
+
+        <div id="tab-hackathons" class="tab-content">
+          <div class="hack-list">
+            <div class="hack-item">
+              <div
+                class="hack-icon"
+                style="
+                  background: rgba(52, 211, 153, 0.07);
+                  border-color: rgba(52, 211, 153, 0.2);
+                "
+              >
+                🏆
+              </div>
+              <div class="hack-info">
+                <div class="hack-name">HackAI 2025</div>
+                <div class="hack-org">IIT Bombay · April 2025</div>
+              </div>
+              <span class="hack-badge badge-won">1st place</span>
+            </div>
+            <div class="hack-item">
+              <div
+                class="hack-icon"
+                style="
+                  background: rgba(251, 191, 36, 0.07);
+                  border-color: rgba(251, 191, 36, 0.2);
+                "
+              >
+                🥈
+              </div>
+              <div class="hack-info">
+                <div class="hack-name">DevStorm 2025</div>
+                <div class="hack-org">Microsoft · Feb 2025</div>
+              </div>
+              <span class="hack-badge badge-top">Top 3</span>
+            </div>
+            <div class="hack-item">
+              <div
+                class="hack-icon"
+                style="
+                  background: rgba(124, 58, 237, 0.07);
+                  border-color: rgba(124, 58, 237, 0.2);
+                "
+              >
+                💻
+              </div>
+              <div class="hack-info">
+                <div class="hack-name">CodeFusion 2024</div>
+                <div class="hack-org">Google · Nov 2024</div>
+              </div>
+              <span class="hack-badge badge-part">Participant</span>
+            </div>
+            <div class="hack-item">
+              <div
+                class="hack-icon"
+                style="
+                  background: rgba(124, 58, 237, 0.07);
+                  border-color: rgba(124, 58, 237, 0.2);
+                "
+              >
+                💻
+              </div>
+              <div class="hack-info">
+                <div class="hack-name">BuildFast 2024</div>
+                <div class="hack-org">SJCIT · Aug 2024</div>
+              </div>
+              <span class="hack-badge badge-part">Participant</span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- RIGHT PANEL -->
+      <aside class="right-panel">
+        <div class="panel-block">
+          <h3>// quick stats</h3>
+          <div class="panel-stat">
+            <span class="panel-stat-label">hackathons</span
+            ><span class="panel-stat-val">4</span>
+          </div>
+          <div class="panel-stat">
+            <span class="panel-stat-label">wins</span
+            ><span class="panel-stat-val">1</span>
+          </div>
+          <div class="panel-stat">
+            <span class="panel-stat-label">total likes</span
+            ><span class="panel-stat-val" id="rpLikes">493</span>
+          </div>
+          <div class="panel-stat">
+            <span class="panel-stat-label">posts</span
+            ><span class="panel-stat-val" id="rpPosts">6</span>
+          </div>
+        </div>
+        <div class="panel-block">
+          <h3>// skills</h3>
+          <div
+            id="rpSkills"
+            style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px"
+          ></div>
+        </div>
+        <div class="panel-block">
+          <h3>// network</h3>
+          <div class="panel-stat">
+            <span class="panel-stat-label">followers</span>
+            <span
+              class="panel-stat-val"
+              style="cursor: pointer; color: var(--accent2)"
+              onclick="openFollowModal('followers')"
+              id="rpFollowers"
+              >248</span
+            >
+          </div>
+          <div class="panel-stat">
+            <span class="panel-stat-label">following</span>
+            <span
+              class="panel-stat-val"
+              style="cursor: pointer; color: var(--accent2)"
+              onclick="openFollowModal('following')"
+              id="rpFollowing"
+              >91</span
+            >
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- FOLLOWERS / FOLLOWING MODAL -->
+    <div class="overlay" id="followOverlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeFollowModal()">✕</button>
+        <div class="modal-tabs">
+          <div
+            class="modal-tab active"
+            id="tabFollowers"
+            onclick="switchFollowTab('followers')"
+          >
+            Followers
+            <span
+              id="fCountBadge"
+              style="font-size: 10px; color: var(--muted); margin-left: 4px"
+            ></span>
+          </div>
+          <div
+            class="modal-tab"
+            id="tabFollowing"
+            onclick="switchFollowTab('following')"
+          >
+            Following
+            <span
+              id="fgCountBadge"
+              style="font-size: 10px; color: var(--muted); margin-left: 4px"
+            ></span>
+          </div>
+        </div>
+        <div class="u-search">
+          <input
+            type="text"
+            id="followSearch"
+            placeholder="Search..."
+            oninput="renderFollowList()"
+          />
+        </div>
+        <div class="user-list" id="userList"></div>
+      </div>
+    </div>
+
+    <!-- EDIT PROFILE MODAL -->
+    <div class="overlay" id="editOverlay">
+      <div class="edit-modal">
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+        <h2>Edit Profile</h2>
+        <p class="sub">Update your public info.</p>
+        <div class="mfields">
+          <div class="mfield">
+            <label>Display Name</label
+            ><input type="text" id="editName" placeholder="Your name" />
+          </div>
+          <div class="mfield">
+            <label>Username</label
+            ><input type="text" id="editHandle" placeholder="@handle" />
+          </div>
+          <div class="mfield">
+            <label>Bio</label
+            ><textarea
+              id="editBio"
+              placeholder="Tell the dev community about yourself..."
+            ></textarea>
+          </div>
+          <div class="mfield">
+            <label>College / Role</label
+            ><input
+              type="text"
+              id="editCollege"
+              placeholder="e.g. AIML, SJCIT"
+            />
+          </div>
+          <div class="mfield">
+            <label>Location</label
+            ><input type="text" id="editLocation" placeholder="City, Country" />
+          </div>
+          <div class="mfield">
+            <label>Skills</label>
+            <div class="skills-input-wrap">
+              <input
+                type="text"
+                id="skillInput"
+                placeholder="e.g. React"
+                onkeydown="
+                  if (event.key === 'Enter') {
+                    addSkill();
+                    event.preventDefault();
+                  }
+                "
+              />
+              <button class="btn-add-skill" onclick="addSkill()">+ Add</button>
+            </div>
+            <div class="skills-edit-row" id="skillsEditRow"></div>
+          </div>
+        </div>
+        <div class="modal-btns">
+          <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+          <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ── DATA ──
+      let profile = {
+        name: "Atharva Joshi",
+        handle: "@atharva",
+        college: "AIML, SJCIT",
+        bio: "Building cool stuff and competing in hackathons. AIML student @ SJCIT. Creator of CodexArena.",
+        location: "Bengaluru, IN",
+        skills: ["Python", "React", "Node.js", "ML", "Figma"],
+        initials: "AJ",
+      };
+
+      const avatarColors = [
+        "linear-gradient(135deg,#7c3aed,#a78bfa)",
+        "linear-gradient(135deg,#0d9488,#34d399)",
+        "linear-gradient(135deg,#be185d,#f472b6)",
+        "linear-gradient(135deg,#b45309,#fbbf24)",
+        "linear-gradient(135deg,#1d4ed8,#60a5fa)",
+        "linear-gradient(135deg,#065f46,#6ee7b7)",
+        "linear-gradient(135deg,#9d174d,#ec4899)",
+        "linear-gradient(135deg,#4338ca,#818cf8)",
+      ];
+
+      let followers = [
+        {
+          id: 1,
+          name: "Riya Sharma",
+          handle: "@riya",
+          initials: "RS",
+          color: 1,
+          bio: "Fullstack dev · React + Supabase",
+          following: false,
+        },
+        {
+          id: 2,
+          name: "Dev Patel",
+          handle: "@devp",
+          initials: "DP",
+          color: 2,
+          bio: "Backend engineer · Go + Postgres",
+          following: true,
+        },
+        {
+          id: 3,
+          name: "Sneha R.",
+          handle: "@sneha",
+          initials: "SR",
+          color: 3,
+          bio: "ML enthusiast · PyTorch lover",
+          following: true,
+        },
+        {
+          id: 4,
+          name: "Karan M.",
+          handle: "@karan",
+          initials: "KM",
+          color: 4,
+          bio: "Product + code · 3x hackathon win",
+          following: false,
+        },
+        {
+          id: 5,
+          name: "Priya N.",
+          handle: "@priya",
+          initials: "PN",
+          color: 5,
+          bio: "Open source contributor · FOSS",
+          following: false,
+        },
+        {
+          id: 6,
+          name: "Arjun V.",
+          handle: "@arjunv",
+          initials: "AV",
+          color: 6,
+          bio: "DevOps · K8s + CI/CD nerd",
+          following: true,
+        },
+        {
+          id: 7,
+          name: "Meera T.",
+          handle: "@meerat",
+          initials: "MT",
+          color: 7,
+          bio: "UI/UX + frontend · Figma wizrd",
+          following: false,
+        },
+        {
+          id: 8,
+          name: "Sahil K.",
+          handle: "@sahilk",
+          initials: "SK",
+          color: 0,
+          bio: "Security researcher · CTF player",
+          following: true,
+        },
+      ];
+
+      let following = [
+        {
+          id: 2,
+          name: "Dev Patel",
+          handle: "@devp",
+          initials: "DP",
+          color: 2,
+          bio: "Backend engineer · Go + Postgres",
+          following: true,
+        },
+        {
+          id: 3,
+          name: "Sneha R.",
+          handle: "@sneha",
+          initials: "SR",
+          color: 3,
+          bio: "ML enthusiast · PyTorch lover",
+          following: true,
+        },
+        {
+          id: 6,
+          name: "Arjun V.",
+          handle: "@arjunv",
+          initials: "AV",
+          color: 6,
+          bio: "DevOps · K8s + CI/CD nerd",
+          following: true,
+        },
+        {
+          id: 8,
+          name: "Sahil K.",
+          handle: "@sahilk",
+          initials: "SK",
+          color: 0,
+          bio: "Security researcher · CTF player",
+          following: true,
+        },
+        {
+          id: 9,
+          name: "Tanvi S.",
+          handle: "@tanvi",
+          initials: "TS",
+          color: 1,
+          bio: "Competitive programmer · CF expert",
+          following: true,
+        },
+        {
+          id: 10,
+          name: "Rohan D.",
+          handle: "@rohd",
+          initials: "RD",
+          color: 4,
+          bio: "AI/ML · building @ stealth",
+          following: true,
+        },
+      ];
+
+      let posts = [
+        {
+          id: 1,
+          tag: "hackathon",
+          time: "2h",
+          text: "Just shipped our project at HackAI 2025 and we WON 🏆\n\nFull breakdown — ideation → build → pitch in 36 hours.\n\nKey lesson: scope ruthlessly. We cut 3 features in the first hour and it saved us.",
+          likes: 142,
+          liked: false,
+          comments: 18,
+        },
+        {
+          id: 2,
+          tag: "tips",
+          time: "1d",
+          text: "Your hackathon pitch is a product demo, not a tech talk.\n\nStop explaining your architecture.\nStart showing the problem you solved.\n\nJudges remember feelings, not frameworks.",
+          likes: 78,
+          liked: false,
+          comments: 7,
+        },
+        {
+          id: 3,
+          tag: "hackathon",
+          time: "3d",
+          text: "3 hackathons. Here's what actually changed:\n\nHack 1 → overbuilt, underslept\nHack 2 → better scoping, still tired\nHack 3 → shipped by midnight, placed 2nd\n\nRest is a competitive advantage.",
+          likes: 91,
+          liked: false,
+          comments: 16,
+        },
+        {
+          id: 4,
+          tag: "tips",
+          time: "5d",
+          text: 'The git commit that saved our hackathon:\n\n`git commit -m "revert: undo the 2am genius idea"`\n\nLearn to kill your darlings — especially at 2am.',
+          likes: 134,
+          liked: false,
+          comments: 24,
+        },
+        {
+          id: 5,
+          tag: "api",
+          time: "6d",
+          text: "Top 3 APIs for hackathons:\n\n→ Clerk for auth\n→ Supabase for database\n→ Resend for email\n\nAll free tier friendly. Bookmark this.",
+          likes: 64,
+          liked: false,
+          comments: 9,
+        },
+        {
+          id: 6,
+          tag: "mvp",
+          time: "1w",
+          text: "The MVP mindset:\n\n→ Pick ONE user problem\n→ Build only the happy path\n→ Fake everything else\n→ Make the demo feel magical\n\nJudges see your demo, not your codebase.",
+          likes: 55,
+          liked: false,
+          comments: 11,
+        },
+      ];
+
+      // ── FOLLOW MODAL ──
+      let activeFollowTab = "followers";
+
+      function openFollowModal(tab) {
+        activeFollowTab = tab;
+        document.getElementById("followSearch").value = "";
+        document.getElementById("fCountBadge").textContent = followers.length;
+        document.getElementById("fgCountBadge").textContent = following.length;
+        document
+          .getElementById("tabFollowers")
+          .classList.toggle("active", tab === "followers");
+        document
+          .getElementById("tabFollowing")
+          .classList.toggle("active", tab === "following");
+        renderFollowList();
+        document.getElementById("followOverlay").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeFollowModal() {
+        document.getElementById("followOverlay").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function switchFollowTab(tab) {
+        activeFollowTab = tab;
+        document.getElementById("followSearch").value = "";
+        document
+          .getElementById("tabFollowers")
+          .classList.toggle("active", tab === "followers");
+        document
+          .getElementById("tabFollowing")
+          .classList.toggle("active", tab === "following");
+        renderFollowList();
+      }
+
+      function renderFollowList() {
+        const q = document.getElementById("followSearch").value.toLowerCase();
+        const list = activeFollowTab === "followers" ? followers : following;
+        const filtered = list.filter(
+          (u) =>
+            !q ||
+            u.name.toLowerCase().includes(q) ||
+            u.handle.toLowerCase().includes(q) ||
+            u.bio.toLowerCase().includes(q),
+        );
+
+        const ul = document.getElementById("userList");
+        if (filtered.length === 0) {
+          ul.innerHTML = `<div class="u-empty">No users found.</div>`;
+          return;
+        }
+
+        ul.innerHTML = filtered
+          .map(
+            (u) => `
+      <div class="user-item">
+        <div class="u-avatar" style="background:${avatarColors[u.color]}">${u.initials}</div>
+        <div class="u-info">
+          <div class="u-name">${u.name}</div>
+          <div class="u-handle">${u.handle}</div>
+          <div class="u-bio">${u.bio}</div>
+        </div>
+        <button class="btn-follow ${u.following ? "following" : ""}"
+          onclick="toggleFollow(event, ${u.id}, '${activeFollowTab}')">
+          ${u.following ? "Following" : "Follow"}
+        </button>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function toggleFollow(e, id, listName) {
+        e.stopPropagation();
+        const list = listName === "followers" ? followers : following;
+        const user = list.find((u) => u.id === id);
+        if (!user) return;
+        user.following = !user.following;
+
+        // sync across both lists
+        const mirror = listName === "followers" ? following : followers;
+        const mirrored = mirror.find((u) => u.id === id);
+        if (mirrored) mirrored.following = user.following;
+
+        // update stat counts
+        const followingCount =
+          followers.filter((u) => u.following).length +
+          following.filter((u) => !followers.find((f) => f.id === u.id)).length;
+        document.getElementById("statFollowing").textContent = following.filter(
+          (u) => u.following,
+        ).length;
+        document.getElementById("rpFollowing").textContent = following.filter(
+          (u) => u.following,
+        ).length;
+
+        renderFollowList();
+      }
+
+      // close follow modal on overlay click
+      document
+        .getElementById("followOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeFollowModal();
+        });
+
+      // ── EDIT MODAL ──
+      let editSkills = [];
+
+      function openEditModal() {
+        editSkills = [...profile.skills];
+        document.getElementById("editName").value = profile.name;
+        document.getElementById("editHandle").value = profile.handle;
+        document.getElementById("editBio").value = profile.bio;
+        document.getElementById("editCollege").value = profile.college;
+        document.getElementById("editLocation").value = profile.location;
+        renderEditSkills();
+        document.getElementById("editOverlay").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeEditModal() {
+        document.getElementById("editOverlay").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function renderEditSkills() {
+        document.getElementById("skillsEditRow").innerHTML = editSkills
+          .map(
+            (s, i) => `
+      <span class="skill-edit-chip">${s}<button class="skill-remove" onclick="removeSkill(${i})">✕</button></span>
+    `,
+          )
+          .join("");
+      }
+
+      function addSkill() {
+        const inp = document.getElementById("skillInput");
+        const val = inp.value.trim();
+        if (val && !editSkills.includes(val)) {
+          editSkills.push(val);
+          renderEditSkills();
+        }
+        inp.value = "";
+        inp.focus();
+      }
+      function removeSkill(i) {
+        editSkills.splice(i, 1);
+        renderEditSkills();
+      }
+
+      function saveProfile() {
+        const name = document.getElementById("editName").value.trim();
+        if (!name) return;
+        profile.name = name;
+        profile.handle =
+          document.getElementById("editHandle").value.trim() || profile.handle;
+        profile.bio = document.getElementById("editBio").value.trim();
+        profile.college = document.getElementById("editCollege").value.trim();
+        profile.location = document.getElementById("editLocation").value.trim();
+        profile.skills = [...editSkills];
+        profile.initials = name
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase();
+        renderProfile();
+        renderPosts();
+        closeEditModal();
+      }
+
+      document
+        .getElementById("editOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeEditModal();
+        });
+
+      // ── TABS ──
+      function switchTab(el, name) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("tab-" + name).classList.add("active");
+      }
+
+      // ── RENDER ──
+      function renderProfile() {
+        document.getElementById("profileName").textContent = profile.name;
+        document.getElementById("profileHandle").textContent =
+          profile.handle + " · " + profile.college;
+        document.getElementById("profileBio").textContent = profile.bio;
+        document.getElementById("profileLocation").textContent =
+          profile.location;
+        document.getElementById("topbarName").textContent = profile.name;
+        document.getElementById("avatarInitials").textContent =
+          profile.initials;
+        const chips = profile.skills
+          .map((s) => `<span class="skill-chip">${s}</span>`)
+          .join("");
+        document.getElementById("skillsRow").innerHTML = chips;
+        document.getElementById("rpSkills").innerHTML = chips;
+      }
+
+      function renderPosts() {
+        document.getElementById("postsList").innerHTML = posts
+          .map(
+            (p) => `
+      <div class="post">
+        <div class="p-avatar">${profile.initials}</div>
+        <div class="p-body">
+          <div class="p-header">
+            <span class="p-name">${profile.name}</span>
+            <span class="p-handle">${profile.handle}</span>
+            <span class="p-time">${p.time}</span>
+          </div>
+          <div class="p-text">${esc(p.text).replace(/\n/g, "<br>")}</div>
+          <div style="margin-bottom:10px"><span class="p-tag"># ${p.tag}</span></div>
+          <div class="p-actions">
+            <button class="act-btn ${p.liked ? "liked" : ""}" onclick="toggleLike(${p.id})">
+              <span class="act-icon">${p.liked ? "♥" : "♡"}</span><span>${p.likes}</span>
+            </button>
+            <button class="act-btn" style="color:var(--muted)">
+              <span class="act-icon">◎</span><span>${p.comments}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+        const total = posts.length;
+        const totalLikes = posts.reduce((s, p) => s + p.likes, 0);
+        document.getElementById("statPosts").textContent = total;
+        document.getElementById("statLikes").textContent = totalLikes;
+        document.getElementById("rpPosts").textContent = total;
+        document.getElementById("rpLikes").textContent = totalLikes;
+        document.getElementById("topbarPosts").textContent = total + " posts";
+      }
+
+      function toggleLike(id) {
+        const p = posts.find((x) => x.id === id);
+        if (!p) return;
+        p.liked = !p.liked;
+        p.likes += p.liked ? 1 : -1;
+        renderPosts();
+      }
+
+      function esc(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // ── INIT ──
+      renderProfile();
+      renderPosts();
+    </script>
+  </body>
+</html>

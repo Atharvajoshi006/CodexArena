@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodexArena — Blogs</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080c14;
+        --sidebar: #0b0f1a;
+        --feed: #080c14;
+        --line: rgba(255, 255, 255, 0.06);
+        --accent: #7c3aed;
+        --accent2: #a78bfa;
+        --green: #34d399;
+        --pink: #f472b6;
+        --text: #e8edf5;
+        --muted: #4b5675;
+        --muted2: #8892a4;
+        --tag-bg: rgba(124, 58, 237, 0.1);
+        --tag-border: rgba(124, 58, 237, 0.22);
+        --hover: rgba(255, 255, 255, 0.025);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+
+      /* subtle scanline texture */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 999;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+      }
+
+      /* ── LAYOUT ── */
+      .shell {
+        display: flex;
+        width: 100%;
+        max-width: 1080px;
+        min-height: 100vh;
+      }
+
+      /* ── LEFT SIDEBAR ── */
+      .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--line);
+        padding: 28px 20px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow-y: auto;
+      }
+
+      .logo {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 17px;
+        text-decoration: none;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 8px 10px;
+        margin-bottom: 16px;
+      }
+      .lb {
+        color: var(--accent2);
+      }
+      .ld {
+        width: 6px;
+        height: 6px;
+        background: var(--green);
+        border-radius: 50%;
+        margin-left: 5px;
+        animation: blink 2.5s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--muted2);
+        font-size: 13px;
+        transition: all 0.15s;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .nav-item:hover {
+        background: var(--hover);
+        color: var(--text);
+      }
+      .nav-item.active {
+        color: var(--text);
+        background: var(--hover);
+      }
+      .nav-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+      }
+
+      .sidebar-divider {
+        height: 1px;
+        background: var(--line);
+        margin: 10px 0;
+      }
+
+      .tag-section {
+        margin-top: 4px;
+      }
+      .tag-label {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding: 0 12px;
+        margin-bottom: 8px;
+        display: block;
+      }
+      .sidebar-tag {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--muted2);
+        cursor: pointer;
+        transition: all 0.15s;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .sidebar-tag:hover {
+        background: var(--hover);
+        color: var(--text);
+      }
+      .sidebar-tag.active {
+        color: var(--accent2);
+        background: var(--tag-bg);
+      }
+      .tag-count {
+        font-size: 11px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1px 7px;
+        border-radius: 10px;
+      }
+
+      .btn-post-sidebar {
+        margin-top: auto;
+        padding: 11px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.2s;
+        width: 100%;
+      }
+      .btn-post-sidebar:hover {
+        background: var(--accent2);
+      }
+
+      /* ── FEED ── */
+      .feed {
+        flex: 1;
+        border-right: 1px solid var(--line);
+        min-height: 100vh;
+      }
+
+      .feed-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 16px 20px;
+        background: rgba(8, 12, 20, 0.92);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .feed-title {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 7px 12px;
+        flex: 1;
+        max-width: 260px;
+      }
+      .search-box input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        width: 100%;
+      }
+      .search-box input::placeholder {
+        color: var(--muted);
+      }
+      .search-icon {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* compose box */
+      .compose {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        gap: 12px;
+      }
+      .compose-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+      }
+      .compose-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .compose-input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        resize: none;
+        width: 100%;
+        line-height: 1.6;
+        min-height: 52px;
+      }
+      .compose-input::placeholder {
+        color: var(--muted);
+      }
+      .compose-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+      }
+      .compose-tags-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .compose-tag-pick {
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: var(--tag-bg);
+        border: 1px solid var(--tag-border);
+        color: var(--accent2);
+        cursor: pointer;
+        font-family: "JetBrains Mono", monospace;
+        transition: all 0.15s;
+      }
+      .compose-tag-pick:hover {
+        background: rgba(124, 58, 237, 0.2);
+      }
+      .compose-tag-pick.chosen {
+        background: rgba(124, 58, 237, 0.25);
+      }
+      .char-count {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .btn-publish {
+        padding: 8px 18px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-publish:hover {
+        background: var(--accent2);
+      }
+
+      /* ── POST ── */
+      .post {
+        display: flex;
+        gap: 12px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .post:hover {
+        background: var(--hover);
+      }
+      .post.pinned {
+        background: rgba(124, 58, 237, 0.03);
+      }
+
+      .post-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+      }
+
+      .post-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .post-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
+      }
+      .post-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .post-handle {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .post-time {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .post-time::before {
+        content: "·";
+        margin-right: 6px;
+      }
+
+      .pin-badge {
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        color: var(--accent2);
+        background: var(--tag-bg);
+        border: 1px solid var(--tag-border);
+        padding: 1px 7px;
+        border-radius: 4px;
+      }
+
+      .post-text {
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.65;
+        margin-bottom: 10px;
+        word-break: break-word;
+      }
+
+      /* inline code style for dev feel */
+      .post-text .code-snippet {
+        font-family: "JetBrains Mono", monospace;
+        background: rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--tag-border);
+        border-radius: 4px;
+        padding: 1px 6px;
+        font-size: 12px;
+        color: var(--accent2);
+      }
+
+      .post-tag-pill {
+        display: inline-block;
+        font-size: 11px;
+        padding: 2px 9px;
+        border-radius: 4px;
+        background: var(--tag-bg);
+        border: 1px solid var(--tag-border);
+        color: var(--accent2);
+        margin-bottom: 10px;
+        letter-spacing: 0.04em;
+      }
+
+      .post-actions {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+      .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        padding: 4px 0;
+        transition: color 0.15s;
+      }
+      .action-btn:hover.like-action {
+        color: var(--pink);
+      }
+      .action-btn.liked {
+        color: var(--pink) !important;
+      }
+      .action-btn:hover.comment-action {
+        color: var(--accent2);
+      }
+      .action-btn:hover.share-action {
+        color: var(--green);
+      }
+      .action-icon {
+        font-size: 14px;
+        transition: transform 0.15s;
+      }
+      .action-btn:hover .action-icon {
+        transform: scale(1.2);
+      }
+      .action-btn.liked .action-icon {
+        transform: scale(1.15);
+      }
+
+      /* ── RIGHT PANEL ── */
+      .right-panel {
+        width: 280px;
+        flex-shrink: 0;
+        padding: 20px 16px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .panel-block {
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .panel-block h3 {
+        font-family: "Syne", sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 14px;
+      }
+
+      .trending-item {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .trending-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .trending-item:hover {
+        opacity: 0.75;
+      }
+      .trending-tag {
+        font-size: 11px;
+        color: var(--accent2);
+        margin-bottom: 2px;
+      }
+      .trending-title {
+        font-size: 12px;
+        color: var(--text);
+        line-height: 1.4;
+      }
+      .trending-count {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .who-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .who-item:last-child {
+        border-bottom: none;
+      }
+      .who-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: white;
+        flex-shrink: 0;
+      }
+      .who-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .who-name {
+        font-size: 12px;
+        color: var(--text);
+      }
+      .who-handle {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .btn-follow {
+        font-size: 11px;
+        padding: 4px 12px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: none;
+        color: var(--text);
+        cursor: pointer;
+        font-family: "JetBrains Mono", monospace;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .btn-follow:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .btn-follow.following {
+        background: rgba(124, 58, 237, 0.12);
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      /* empty state */
+      .empty {
+        display: none;
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      /* modal overlay for compose on mobile */
+      @media (max-width: 900px) {
+        .right-panel {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .sidebar {
+          width: 56px;
+          padding: 16px 8px;
+        }
+        .nav-item span:not(.nav-icon) {
+          display: none;
+        }
+        .logo span:not(.lb):not(.ld) {
+          display: none;
+        }
+        .sidebar-tag span:not(.tag-count) {
+          display: none;
+        }
+        .tag-label,
+        .btn-post-sidebar {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- LEFT SIDEBAR -->
+      <aside class="sidebar">
+        <a href="index.html" class="logo">
+          <span class="lb">{</span><span>CodexArena</span
+          ><span class="lb">}</span>
+          <span class="ld"></span>
+        </a>
+
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">⌂</span><span>Home</span>
+        </a>
+        <a href="blogs.html" class="nav-item active">
+          <span class="nav-icon"></span><span>Blogs</span>
+        </a>
+        <a href="hackathons.html" class="nav-item">
+          <span class="nav-icon"></span><span>Hackathons</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+          <span class="nav-icon"></span><span>Profile</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="tag-section">
+          <span class="tag-label">Topics</span>
+          <button
+            class="sidebar-tag active"
+            data-tag="all"
+            onclick="setTag(this, 'all')"
+          >
+            <span># all</span><span class="tag-count">9</span>
+          </button>
+          <button
+            class="sidebar-tag"
+            data-tag="hackathon"
+            onclick="setTag(this, 'hackathon')"
+          >
+            <span># hackathon</span><span class="tag-count">3</span>
+          </button>
+          <button
+            class="sidebar-tag"
+            data-tag="tips"
+            onclick="setTag(this, 'tips')"
+          >
+            <span># tips</span><span class="tag-count">2</span>
+          </button>
+          <button
+            class="sidebar-tag"
+            data-tag="api"
+            onclick="setTag(this, 'api')"
+          >
+            <span># api</span><span class="tag-count">1</span>
+          </button>
+          <button
+            class="sidebar-tag"
+            data-tag="mvp"
+            onclick="setTag(this, 'mvp')"
+          >
+            <span># mvp</span><span class="tag-count">1</span>
+          </button>
+          <button
+            class="sidebar-tag"
+            data-tag="ai"
+            onclick="setTag(this, 'ai')"
+          >
+            <span># ai</span><span class="tag-count">1</span>
+          </button>
+          <button
+            class="sidebar-tag"
+            data-tag="teamwork"
+            onclick="setTag(this, 'teamwork')"
+          >
+            <span># teamwork</span><span class="tag-count">1</span>
+          </button>
+        </div>
+
+        <button class="btn-post-sidebar" onclick="focusCompose()">
+          + New Post
+        </button>
+      </aside>
+
+      <!-- FEED -->
+      <main class="feed">
+        <div class="feed-header">
+          <span class="feed-title">// blogs</span>
+          <div class="search-box">
+            <span class="search-icon">⌕</span>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="search posts..."
+              oninput="renderPosts()"
+            />
+          </div>
+        </div>
+
+        <!-- COMPOSE -->
+        <div class="compose">
+          <div class="compose-avatar" id="composeAvatar">You</div>
+          <div class="compose-right">
+            <textarea
+              class="compose-input"
+              id="composeText"
+              placeholder="// share something with the dev community..."
+              rows="2"
+              oninput="updateCharCount()"
+            ></textarea>
+            <div class="compose-footer">
+              <div class="compose-tags-row" id="composeTags">
+                <span
+                  style="
+                    font-size: 11px;
+                    color: var(--muted);
+                    margin-right: 4px;
+                  "
+                  >#</span
+                >
+                <button
+                  class="compose-tag-pick"
+                  data-tag="hackathon"
+                  onclick="pickTag(this)"
+                >
+                  hackathon
+                </button>
+                <button
+                  class="compose-tag-pick"
+                  data-tag="tips"
+                  onclick="pickTag(this)"
+                >
+                  tips
+                </button>
+                <button
+                  class="compose-tag-pick"
+                  data-tag="api"
+                  onclick="pickTag(this)"
+                >
+                  api
+                </button>
+                <button
+                  class="compose-tag-pick"
+                  data-tag="mvp"
+                  onclick="pickTag(this)"
+                >
+                  mvp
+                </button>
+                <button
+                  class="compose-tag-pick"
+                  data-tag="ai"
+                  onclick="pickTag(this)"
+                >
+                  ai
+                </button>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <span class="char-count" id="charCount">0 / 280</span>
+                <button class="btn-publish" onclick="publishPost()">
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POSTS -->
+        <div id="postFeed"></div>
+        <div class="empty" id="emptyState">
+          <div style="font-size: 28px; margin-bottom: 8px">( ˘ ³˘)</div>
+          no posts found.<br />try a different search or tag.
+        </div>
+      </main>
+
+      <!-- RIGHT PANEL -->
+      <aside class="right-panel">
+        <div class="panel-block">
+          <h3>Trending</h3>
+          <div class="trending-item" onclick="setTagByName('hackathon')">
+            <div class="trending-tag"># hackathon</div>
+            <div class="trending-title">How We Won Our First Hackathon</div>
+            <div class="trending-count">142 likes</div>
+          </div>
+          <div class="trending-item" onclick="setTagByName('ai')">
+            <div class="trending-tag"># ai</div>
+            <div class="trending-title">
+              How AI Tools Changed Our Hackathon Game
+            </div>
+            <div class="trending-count">103 likes</div>
+          </div>
+          <div class="trending-item" onclick="setTagByName('tips')">
+            <div class="trending-tag"># tips</div>
+            <div class="trending-title">
+              Why Your Pitch Matters More Than Your Code
+            </div>
+            <div class="trending-count">78 likes</div>
+          </div>
+        </div>
+
+        <div class="panel-block">
+          <h3>Who to follow</h3>
+          <div class="who-item">
+            <div
+              class="who-avatar"
+              style="background: linear-gradient(135deg, #7c3aed, #a78bfa)"
+            >
+              AJ
+            </div>
+            <div class="who-info">
+              <div class="who-name">Atharva Joshi</div>
+              <div class="who-handle">@atharva · AIML</div>
+            </div>
+            <button class="btn-follow" onclick="toggleFollow(this)">
+              Follow
+            </button>
+          </div>
+          <div class="who-item">
+            <div
+              class="who-avatar"
+              style="background: linear-gradient(135deg, #0d9488, #34d399)"
+            >
+              RS
+            </div>
+            <div class="who-info">
+              <div class="who-name">Riya Sharma</div>
+              <div class="who-handle">@riya · fullstack</div>
+            </div>
+            <button class="btn-follow" onclick="toggleFollow(this)">
+              Follow
+            </button>
+          </div>
+          <div class="who-item">
+            <div
+              class="who-avatar"
+              style="background: linear-gradient(135deg, #be185d, #f472b6)"
+            >
+              DP
+            </div>
+            <div class="who-info">
+              <div class="who-name">Dev Patel</div>
+              <div class="who-handle">@devp · backend</div>
+            </div>
+            <button class="btn-follow" onclick="toggleFollow(this)">
+              Follow
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      // ── DATA ──
+      const avatarColors = [
+        "linear-gradient(135deg,#7c3aed,#a78bfa)",
+        "linear-gradient(135deg,#0d9488,#34d399)",
+        "linear-gradient(135deg,#be185d,#f472b6)",
+        "linear-gradient(135deg,#b45309,#fbbf24)",
+        "linear-gradient(135deg,#1d4ed8,#60a5fa)",
+        "linear-gradient(135deg,#065f46,#6ee7b7)",
+      ];
+
+      let posts = [
+        {
+          id: 1,
+          name: "Atharva Joshi",
+          handle: "atharva",
+          initials: "AJ",
+          color: 0,
+          time: "2h",
+          tag: "hackathon",
+          pinned: true,
+          text: "Just shipped our project at HackAI 2025 and we WON 🏆\n\nHere's our full breakdown — ideation → build → pitch in 36 hours.\n\nKey lesson: scope ruthlessly. We cut 3 features in the first hour and it saved us.",
+          likes: 142,
+          liked: false,
+          comments: 18,
+        },
+        {
+          id: 2,
+          name: "Riya Sharma",
+          handle: "riya",
+          initials: "RS",
+          color: 1,
+          time: "4h",
+          tag: "api",
+          text: "5 APIs I wish I knew before my first hackathon:\n\n1. Clerk — auth in 10 mins\n2. Supabase — DB + realtime\n3. Resend — email without pain\n4. Replicate — ML models via API\n5. Mapbox — maps that actually look good\n\nAll have generous free tiers. Bookmark this.",
+          likes: 87,
+          liked: false,
+          comments: 12,
+        },
+        {
+          id: 3,
+          name: "Dev Patel",
+          handle: "devp",
+          initials: "DP",
+          color: 2,
+          time: "6h",
+          tag: "mvp",
+          text: "The MVP mindset that got us to demo-ready in 24h:\n\n→ Pick ONE user problem\n→ Build only the happy path\n→ Fake everything else\n→ Make the demo flow feel magical\n\nJudges see your demo, not your codebase.",
+          likes: 64,
+          liked: false,
+          comments: 9,
+        },
+        {
+          id: 4,
+          name: "Sneha R.",
+          handle: "sneha",
+          initials: "SR",
+          color: 3,
+          time: "8h",
+          tag: "ai",
+          text: "We used Claude for live code reviews during our hackathon build. Caught a race condition bug at 3am that would have tanked our demo.\n\nAI pair programming during a hackathon is an unfair advantage. Use it.",
+          likes: 103,
+          liked: false,
+          comments: 21,
+        },
+        {
+          id: 5,
+          name: "Karan M.",
+          handle: "karan",
+          initials: "KM",
+          color: 4,
+          time: "1d",
+          tag: "teamwork",
+          text: "Hot take: team composition matters more than technical skill at hackathons.\n\nOur winning team was:\n- 1 person who could design\n- 1 person who could talk\n- 2 people who could code\n\nNo 4-engineer team beats that.",
+          likes: 55,
+          liked: false,
+          comments: 14,
+        },
+        {
+          id: 6,
+          name: "Atharva Joshi",
+          handle: "atharva",
+          initials: "AJ",
+          color: 0,
+          time: "1d",
+          tag: "tips",
+          text: "Your hackathon pitch is a product demo, not a tech talk.\n\nStop explaining your architecture.\nStart showing the problem you solved.\n\nJudges remember feelings, not frameworks.",
+          likes: 78,
+          liked: false,
+          comments: 7,
+        },
+        {
+          id: 7,
+          name: "Priya N.",
+          handle: "priya",
+          initials: "PN",
+          color: 5,
+          time: "2d",
+          tag: "hackathon",
+          text: "3 hackathons in 3 weekends. Here's what actually changed:\n\nWeekend 1 → overbuilt, underslept\nWeekend 2 → better scoping, still tired\nWeekend 3 → shipped by midnight, slept 6 hours, placed 2nd\n\nRest is a competitive advantage.",
+          likes: 91,
+          liked: false,
+          comments: 16,
+        },
+        {
+          id: 8,
+          name: "Riya Sharma",
+          handle: "riya",
+          initials: "RS",
+          color: 1,
+          time: "3d",
+          tag: "tips",
+          text: 'The git commit message that saved our hackathon:\n\n`git commit -m "revert: undo the 2am genius idea"`\n\nLearn to kill your darlings, especially at 2am.',
+          likes: 134,
+          liked: false,
+          comments: 24,
+        },
+        {
+          id: 9,
+          name: "Dev Patel",
+          handle: "devp",
+          initials: "DP",
+          color: 2,
+          time: "4d",
+          tag: "hackathon",
+          text: "Underrated hackathon skill: knowing when to stop building and start rehearsing your demo.\n\nWe switched to demo-mode 4 hours before submission. Best decision we made.",
+          likes: 61,
+          liked: false,
+          comments: 8,
+        },
+      ];
+
+      let activeTag = "all";
+      let selectedTag = "hackathon";
+
+      // ── TAG FILTER ──
+      function setTag(el, tag) {
+        document
+          .querySelectorAll(".sidebar-tag")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+        activeTag = tag;
+        renderPosts();
+      }
+      function setTagByName(tag) {
+        const el = document.querySelector(`.sidebar-tag[data-tag="${tag}"]`);
+        if (el) setTag(el, tag);
+      }
+
+      // ── COMPOSE ──
+      function focusCompose() {
+        document.getElementById("composeText").focus();
+        document
+          .getElementById("composeText")
+          .scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      function updateCharCount() {
+        const len = document.getElementById("composeText").value.length;
+        const el = document.getElementById("charCount");
+        el.textContent = `${len} / 280`;
+        el.style.color = len > 260 ? "#f87171" : "var(--muted)";
+      }
+      function pickTag(el) {
+        document
+          .querySelectorAll(".compose-tag-pick")
+          .forEach((t) => t.classList.remove("chosen"));
+        el.classList.add("chosen");
+        selectedTag = el.dataset.tag;
+      }
+
+      function publishPost() {
+        const text = document.getElementById("composeText").value.trim();
+        if (!text) return;
+
+        posts.unshift({
+          id: Date.now(),
+          name: "You",
+          handle: "you",
+          initials: "You",
+          color: 0,
+          time: "now",
+          tag: selectedTag,
+          pinned: false,
+          text,
+          likes: 0,
+          liked: false,
+          comments: 0,
+        });
+
+        document.getElementById("composeText").value = "";
+        updateCharCount();
+        document
+          .querySelectorAll(".compose-tag-pick")
+          .forEach((t) => t.classList.remove("chosen"));
+        selectedTag = "hackathon";
+        renderPosts();
+      }
+
+      // ── LIKES ──
+      function toggleLike(id) {
+        const post = posts.find((p) => p.id == id);
+        if (!post) return;
+        post.liked = !post.liked;
+        post.likes += post.liked ? 1 : -1;
+        renderPosts();
+      }
+
+      // ── FOLLOW ──
+      function toggleFollow(btn) {
+        const following = btn.classList.toggle("following");
+        btn.textContent = following ? "Following" : "Follow";
+      }
+
+      // ── RENDER ──
+      function renderPosts() {
+        const q = document.getElementById("searchInput").value.toLowerCase();
+        const feed = document.getElementById("postFeed");
+        const empty = document.getElementById("emptyState");
+
+        let filtered = posts.filter((p) => {
+          const matchTag = activeTag === "all" || p.tag === activeTag;
+          const matchQ =
+            !q ||
+            p.text.toLowerCase().includes(q) ||
+            p.name.toLowerCase().includes(q) ||
+            p.tag.includes(q);
+          return matchTag && matchQ;
+        });
+
+        // pinned first
+        filtered.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+        if (filtered.length === 0) {
+          feed.innerHTML = "";
+          empty.style.display = "block";
+          return;
+        }
+        empty.style.display = "none";
+
+        feed.innerHTML = filtered
+          .map(
+            (p) => `
+      <div class="post ${p.pinned ? "pinned" : ""}">
+        <div class="post-avatar" style="background:${avatarColors[p.color]}">${p.initials}</div>
+        <div class="post-body">
+          <div class="post-header">
+            <span class="post-name">${p.name}</span>
+            <span class="post-handle">@${p.handle}</span>
+            <span class="post-time">${p.time}</span>
+            ${p.pinned ? '<span class="pin-badge">📌 pinned</span>' : ""}
+          </div>
+          <div class="post-text">${escapeHtml(p.text).replace(/\n/g, "<br>")}</div>
+          <div style="margin-bottom:10px;"><span class="post-tag-pill"># ${p.tag}</span></div>
+          <div class="post-actions">
+            <button class="action-btn like-action ${p.liked ? "liked" : ""}" onclick="toggleLike(${p.id})">
+              <span class="action-icon">${p.liked ? "♥" : "♡"}</span>
+              <span>${p.likes}</span>
+            </button>
+            <button class="action-btn comment-action">
+              <span class="action-icon">◎</span>
+              <span>${p.comments}</span>
+            </button>
+            <button class="action-btn share-action" onclick="copyShare('${p.id}')">
+              <span class="action-icon">↗</span>
+              <span>share</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function copyShare(id) {
+        navigator.clipboard
+          ?.writeText(window.location.href + "#post-" + id)
+          .catch(() => {});
+      }
+
+      renderPosts();
+    </script>
+  </body>
+</html>
