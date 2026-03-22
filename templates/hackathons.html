@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hackathons · CodexArena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0d1117; --line: rgba(255,255,255,0.06); --accent: #2f81f7; --accent2: #58a6ff;
+        --green: #56d364; --green2: #3fb950; --yellow: #e3b341; --red: #f85149;
+        --text: #e8edf5; --muted: #4b5675; --muted2: #8892a4;
+        --glass: rgba(255,255,255,0.04); --glass-b: rgba(255,255,255,0.08);
+        --hover: rgba(255,255,255,0.025); --card: rgba(12,18,32,0.9);
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", sans-serif; min-height: 100vh; }
+      body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px); background-size: 44px 44px; }
+
+      header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 16px 48px; background: rgba(8,12,20,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+      .logo { font-family: "Outfit",sans-serif; font-weight: 800; font-size: 18px; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 3px; }
+      .lb { color: var(--accent2); }
+      .ld { width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-left: 5px; animation: blink 2.5s infinite; }
+      @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+      nav { display: flex; gap: 6px; align-items: center; }
+      nav a { font-size: 12px; color: var(--muted2); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1px solid transparent; transition: all 0.2s; }
+      nav a:hover, nav a.active { color: var(--text); border-color: var(--line); background: var(--hover); }
+      nav a.active { color: var(--accent2); }
+      .btn-nav { background: var(--accent) !important; color: white !important; border-color: transparent !important; }
+      .btn-nav:hover { background: var(--accent2) !important; }
+
+      .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 48px 80px; }
+      .hero { padding: 48px 0 32px; }
+      .hero-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.18); padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
+      .hero-tag::before { content: ""; width: 5px; height: 5px; background: var(--green); border-radius: 50%; }
+      .hero h1 { font-family: "Outfit",sans-serif; font-size: clamp(26px,4vw,42px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+      .hero h1 span { background: linear-gradient(135deg,var(--accent2),var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .hero p { font-size: 13px; color: var(--muted2); line-height: 1.7; max-width: 480px; }
+
+      .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; padding: 16px; background: var(--card); border: 1px solid var(--glass-b); border-radius: 12px; }
+      .filter-bar label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; display: block; }
+      .filter-group { display: flex; flex-direction: column; gap: 0; }
+      select, input[type="text"] { padding: 8px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-b); border-radius: 7px; color: var(--text); font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; outline: none; transition: border-color 0.2s; cursor: pointer; }
+      select:focus, input[type="text"]:focus { border-color: rgba(47,129,247,0.4); }
+      select option { background: #161b22; }
+      input[type="text"]::placeholder { color: var(--muted); }
+      .search-wrap { flex: 1; min-width: 180px; position: relative; }
+      .search-wrap input { width: 100%; padding-left: 30px; }
+      .s-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; pointer-events: none; }
+      .post-btn { padding: 9px 18px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; cursor: pointer; transition: background 0.2s; white-space: nowrap; margin-left: auto; }
+      .post-btn:hover { background: var(--accent2); }
+      .filter-divider { width: 1px; height: 36px; background: var(--glass-b); flex-shrink: 0; }
+
+      .embed-section { margin-bottom: 36px; }
+      .embed-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+      .embed-head h2 { font-family: "Outfit",sans-serif; font-size: 16px; font-weight: 800; }
+      .embed-line { flex: 1; height: 1px; background: linear-gradient(to right,var(--line),transparent); }
+      .platform-tabs { display: flex; gap: 6px; }
+      .ptab { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 7px; border: 1px solid var(--glass-b); background: var(--glass); color: var(--muted2); font-size: 11px; cursor: pointer; transition: all 0.2s; font-family: "Plus Jakarta Sans",sans-serif; }
+      .ptab:hover { border-color: var(--accent2); color: var(--text); }
+      .ptab.active { background: rgba(47,129,247,0.15); border-color: var(--accent2); color: var(--accent2); }
+      .ptab-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+      .embed-wrap { border: 1px solid var(--glass-b); border-radius: 12px; overflow: hidden; background: var(--card); }
+      .embed-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); background: rgba(0,0,0,0.25); }
+      .embed-url-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted); flex: 1; overflow: hidden; }
+      .u-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+      .open-btn { font-size: 11px; padding: 4px 12px; background: var(--glass); border: 1px solid var(--glass-b); border-radius: 6px; color: var(--muted2); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: "Plus Jakarta Sans",sans-serif; }
+      .open-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+      iframe.embed-frame { width: 100%; height: 640px; border: none; display: block; background: #fff; }
+      .embed-notice { padding: 10px 14px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--line); }
+      .embed-notice a { color: var(--accent2); text-decoration: none; }
+
+      .curated-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+      .curated-head h2 { font-family: "Outfit",sans-serif; font-size: 16px; font-weight: 800; }
+      .curated-line { flex: 1; height: 1px; background: linear-gradient(to right,var(--line),transparent); }
+      .result-count { font-size: 11px; color: var(--muted); }
+
+      .card-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 16px; }
+      .hack-card { background: var(--card); border: 1px solid var(--glass-b); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: all 0.2s; position: relative; overflow: hidden; }
+      .hack-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right,var(--accent),var(--accent2)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+      .hack-card:hover { border-color: rgba(47,129,247,0.3); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+      .hack-card:hover::before { transform: scaleX(1); }
+      .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+      .hack-status { font-size: 9px; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 600; }
+      .hs-open { color: var(--green); background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); }
+      .hs-upcoming { color: var(--accent2); background: rgba(47,129,247,0.08); border: 1px solid rgba(47,129,247,0.2); }
+      .hs-closing { color: var(--red); background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); }
+      .hs-trending { color: var(--yellow); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); }
+      .hack-loc { font-size: 10px; color: var(--muted); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 4px; }
+      .org-row { display: flex; align-items: center; gap: 8px; }
+      .org-av { width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: "Outfit",sans-serif; font-size: 9px; font-weight: 800; color: white; }
+      .org-name { font-size: 11px; color: var(--muted); }
+      .card-title { font-family: "Outfit",sans-serif; font-size: 17px; font-weight: 800; line-height: 1.2; }
+      .card-desc { font-size: 11px; color: var(--muted2); line-height: 1.6; flex: 1; }
+      .card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+      .ctag { font-size: 9px; padding: 2px 7px; border-radius: 4px; background: rgba(48,54,61,0.4); border: 1px solid rgba(48,54,61,0.7); color: var(--accent2); }
+      .card-footer { display: flex; align-items: center; justify-content: space-between; }
+      .posted-by { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+      .pb-av { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: white; font-family: "Outfit",sans-serif; }
+      .like-btn { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted2); background: none; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; cursor: pointer; transition: all 0.2s; font-family: "Plus Jakarta Sans",sans-serif; }
+      .like-btn:hover, .like-btn.liked { color: var(--red); border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.06); }
+      .btn-register { width: 100%; padding: 10px; background: transparent; border: 1px solid var(--green2); color: var(--green); border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 11px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+      .btn-register:hover { background: rgba(63,185,80,0.07); box-shadow: 0 0 20px rgba(16,185,129,0.15); }
+      .empty { text-align: center; padding: 60px 20px; font-size: 13px; color: var(--muted2); grid-column: 1/-1; line-height: 2; }
+      .empty a { color: var(--accent2); text-decoration: none; }
+
+      /* Modal */
+      .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+      .overlay.open { display: flex; }
+      .modal { background: #161b22; border: 1px solid rgba(48,54,61,0.9); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; position: relative; animation: mIn 0.2s ease; }
+      @keyframes mIn { from { opacity:0; transform:scale(0.95) translateY(10px); } }
+      .modal-close { position: absolute; top: 14px; right: 14px; background: var(--glass); border: 1px solid var(--glass-b); color: var(--muted2); width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; font-size: 14px; }
+      .modal-close:hover { color: var(--text); }
+      .modal h2 { font-family: "Outfit",sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+      .modal .sub { font-size: 12px; color: var(--muted); margin-bottom: 22px; }
+      .mfields { display: flex; flex-direction: column; gap: 14px; }
+      .mfield { display: flex; flex-direction: column; gap: 5px; }
+      .mfield label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .mfield input, .mfield textarea, .mfield select { background: rgba(255,255,255,0.04); border: 1px solid var(--glass-b); border-radius: 8px; color: var(--text); font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; padding: 9px 12px; width: 100%; }
+      .mfield input:focus, .mfield textarea:focus, .mfield select:focus { border-color: rgba(47,129,247,0.45); background: rgba(47,129,247,0.06); }
+      .mfield textarea { resize: vertical; min-height: 72px; line-height: 1.6; }
+      .mfield select option { background: #161b22; }
+      .mrow { display: flex; gap: 10px; }
+      .mrow .mfield { flex: 1; }
+      .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+      .btn-submit { flex: 1; padding: 11px; background: linear-gradient(135deg,var(--accent),#1a6ed8); color: white; border: none; border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 16px rgba(47,129,247,0.3); }
+      .btn-submit:hover { opacity: 0.88; }
+      .btn-cancel { padding: 11px 18px; background: var(--glass); border: 1px solid var(--glass-b); color: var(--muted2); border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+      .btn-cancel:hover { color: var(--text); }
+      .modal-msg { font-size: 12px; text-align: center; margin-top: 8px; min-height: 16px; }
+
+      footer { position: relative; z-index: 1; border-top: 1px solid var(--line); padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted); }
+      .footer-logo { font-family: "Outfit",sans-serif; font-weight: 800; font-size: 16px; color: var(--text); }
+      @media (max-width: 640px) { header, .page, footer { padding-left: 16px; padding-right: 16px; } nav a:not(.btn-nav) { display: none; } iframe.embed-frame { height: 480px; } .mrow { flex-direction: column; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo"><span class="lb">{</span>CodexArena<span class="lb">}</span><span class="ld"></span></a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/hackathons/" class="active">Hackathons</a>
+        <a href="/blogs/">Blogs</a>
+        {% if user.is_authenticated %}
+          <a href="/profile/">{{ user.username }}</a>
+          <form method="POST" action="/logout/" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="font-size:12px;color:var(--muted2);background:none;border:1px solid var(--line);border-radius:6px;padding:7px 14px;cursor:pointer;font-family:inherit;">Sign Out</button>
+          </form>
+        {% else %}
+          <a href="/login/">Login</a>
+          <a href="/signup/" class="btn-nav">Sign Up</a>
+        {% endif %}
+      </nav>
+    </header>
+
+    <div class="page">
+      <div class="hero">
+        <div class="hero-tag">Live Events</div>
+        <h1><span>Hackathons</span></h1>
+        <p>Filter by location and month to find hackathons near you. Browse live listings from Devfolio &amp; Unstop, or explore curated verified events below.</p>
+      </div>
+
+      <!-- FILTER BAR — filters the Django-rendered hackathon cards via JS -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>📍 Location</label>
+          <select id="locFilter" onchange="applyFilters()">
+            <option value="all">All India</option>
+            <option value="online">🌐 Online</option>
+            <option value="bengaluru">Bengaluru</option>
+            <option value="mumbai">Mumbai</option>
+            <option value="delhi">Delhi</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="chennai">Chennai</option>
+            <option value="pune">Pune</option>
+            <option value="varanasi">Varanasi</option>
+            <option value="coimbatore">Coimbatore</option>
+          </select>
+        </div>
+        <div class="filter-divider"></div>
+        <div class="filter-group">
+          <label>📅 Month</label>
+          <select id="monthFilter" onchange="applyFilters()">
+            <option value="all">All Months</option>
+            <option value="3">March 2026</option>
+            <option value="4">April 2026</option>
+            <option value="5">May 2026</option>
+            <option value="6">June 2026</option>
+            <option value="7">July 2026</option>
+            <option value="8">August 2026</option>
+          </select>
+        </div>
+        <div class="filter-divider"></div>
+        <div class="filter-group">
+          <label>⚡ Status</label>
+          <select id="statusFilter" onchange="applyFilters()">
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="closing">Closing Soon</option>
+          </select>
+        </div>
+        <div class="filter-divider"></div>
+        <div class="filter-group">
+          <label>🔍 Search</label>
+          <div class="search-wrap">
+            <span class="s-icon">⌕</span>
+            <input type="text" id="searchInput" placeholder="name, org, tag..." oninput="applyFilters()" />
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+          <button class="post-btn" onclick="openModal()">+ Share Hackathon</button>
+        {% else %}
+          <a href="/login/" style="margin-left:auto;padding:9px 18px;background:var(--accent);color:white;border-radius:8px;font-size:12px;text-decoration:none;">+ Share Hackathon</a>
+        {% endif %}
+      </div>
+
+      <!-- LIVE EMBED -->
+      <div class="embed-section">
+        <div class="embed-head">
+          <h2>// Live from Platform</h2>
+          <div class="embed-line"></div>
+          <div class="platform-tabs">
+            <button class="ptab active" data-key="devfolio" onclick="switchPlatform(this)"><span class="ptab-dot" style="background:#3b82f6"></span>Devfolio</button>
+            <button class="ptab" data-key="unstop" onclick="switchPlatform(this)"><span class="ptab-dot" style="background:#f59e0b"></span>Unstop</button>
+            <button class="ptab" data-key="devpost" onclick="switchPlatform(this)"><span class="ptab-dot" style="background:#3fb950"></span>Devpost</button>
+          </div>
+        </div>
+        <div class="embed-wrap">
+          <div class="embed-toolbar">
+            <div class="embed-url-row">
+              <span class="u-dot" id="urlDot" style="background:#3b82f6"></span>
+              <span id="urlText">devfolio.co/hackathons</span>
+            </div>
+            <a id="openTabBtn" href="https://devfolio.co/hackathons" target="_blank" class="open-btn">Open in new tab ↗</a>
+          </div>
+          <iframe id="liveFrame" class="embed-frame" src="https://devfolio.co/hackathons" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox" loading="lazy" title="Live Hackathons"></iframe>
+          <div class="embed-notice">◈ If the embed is blocked — <a id="directLink" href="https://devfolio.co/hackathons" target="_blank">open it directly here →</a></div>
+        </div>
+      </div>
+
+      <!-- CURATED HACKATHONS — Django renders from DB -->
+      <div class="curated-head">
+        <h2>// Verified Hackathons</h2>
+        <div class="curated-line"></div>
+        <div class="result-count">Showing <span id="resCount">{{ hackathons|length }}</span> events</div>
+      </div>
+
+      <div class="card-grid" id="cardGrid">
+        {% for h in hackathons %}
+          <div class="hack-card"
+               data-loc="{{ h.location }}"
+               data-month="{{ h.month }}"
+               data-status="{{ h.status }}"
+               data-title="{{ h.title|lower }}"
+               data-org="{{ h.organizer|lower }}"
+               data-tags="{{ h.tags|lower }}">
+            <div class="card-top">
+              <span class="hack-status hs-{{ h.status }}">{{ h.get_status_display }}</span>
+              <span class="hack-loc">{{ h.location_display }}</span>
+            </div>
+            <div class="org-row">
+              <div class="org-av" style="background:{{ h.org_color }}22;color:{{ h.org_color }};border:1px solid {{ h.org_color }}33">{{ h.org_initials }}</div>
+              <span class="org-name">{{ h.organizer }}</span>
+              <span style="margin-left:auto;font-size:10px;color:var(--muted)">{{ h.month_year }}</span>
+            </div>
+            <div class="card-title">{{ h.title }}</div>
+            <div class="card-desc">{{ h.description }}</div>
+            <div class="card-tags">{% for tag in h.tags_list %}<span class="ctag">{{ tag }}</span>{% endfor %}</div>
+            <div class="card-footer">
+              <div class="posted-by">
+                <div class="pb-av" style="background:{{ h.posted_by_color }}">{{ h.posted_by_initials }}</div>
+                <span>{{ h.posted_by_username }}</span>
+              </div>
+              <!-- Like button POSTs to Django via fetch -->
+              <button class="like-btn {% if h.id in user_liked_ids %}liked{% endif %}"
+                      onclick="toggleLike(this, {{ h.id }})">
+                ♥ <span class="like-count">{{ h.likes_count }}</span>
+              </button>
+            </div>
+            <a class="btn-register" href="{{ h.registration_link }}" target="_blank">{{ h.source_label }}</a>
+          </div>
+        {% empty %}
+          <div class="empty" id="emptyState">No hackathons found.<br/><a href="#" onclick="resetFilters()">Clear filters</a> or <a href="https://devfolio.co/hackathons" target="_blank">browse Devfolio →</a></div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- SHARE HACKATHON MODAL — submits via fetch to /api/hackathons/create/ -->
+    <div class="overlay" id="postOverlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2>Share a Hackathon</h2>
+        <p class="sub">Post a real hackathon for the community. Please include a valid registration link.</p>
+        <div class="mfields">
+          <div class="mfield"><label>Hackathon Name *</label><input type="text" id="fTitle" placeholder="e.g. HackAI 2026" /></div>
+          <div class="mfield"><label>Organizer *</label><input type="text" id="fOrg" placeholder="e.g. IIT Bombay" /></div>
+          <div class="mfield"><label>Description *</label><textarea id="fDesc" placeholder="What's it about? Who can participate?"></textarea></div>
+          <div class="mrow">
+            <div class="mfield">
+              <label>Location</label>
+              <select id="fLoc">
+                <option value="online">🌐 Online</option>
+                <option value="bengaluru">Bengaluru</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="delhi">Delhi</option>
+                <option value="hyderabad">Hyderabad</option>
+                <option value="chennai">Chennai</option>
+                <option value="pune">Pune</option>
+              </select>
+            </div>
+            <div class="mfield">
+              <label>Month</label>
+              <select id="fMonth">
+                <option value="3">March 2026</option>
+                <option value="4">April 2026</option>
+                <option value="5">May 2026</option>
+                <option value="6">June 2026</option>
+              </select>
+            </div>
+          </div>
+          <div class="mrow">
+            <div class="mfield">
+              <label>Status</label>
+              <select id="fStatus"><option value="open">Open</option><option value="upcoming">Upcoming</option><option value="closing">Closing Soon</option></select>
+            </div>
+            <div class="mfield">
+              <label>Mode</label>
+              <select id="fMode"><option>Online</option><option>In-Person</option><option>Hybrid</option></select>
+            </div>
+          </div>
+          <div class="mfield"><label>Tags (comma separated)</label><input type="text" id="fTags" placeholder="AI, Web3, Open Theme" /></div>
+          <div class="mfield"><label>Registration Link *</label><input type="url" id="fLink" placeholder="https://..." /></div>
+        </div>
+        <div class="modal-btns">
+          <button class="btn-submit" onclick="submitPost()">Share →</button>
+          <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        </div>
+        <div class="modal-msg" id="modalMsg"></div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-logo">{CodexArena}</div>
+      <div>Real hackathons · Devfolio · Unstop · Devpost</div>
+      <div>© 2026 CodexArena</div>
+    </footer>
+
+    <script>
+      // ── PLATFORM SWITCHER ──
+      const platforms = {
+        devfolio: { url: "https://devfolio.co/hackathons", label: "devfolio.co/hackathons", color: "#3b82f6" },
+        unstop:   { url: "https://unstop.com/hackathons",  label: "unstop.com/hackathons",  color: "#f59e0b" },
+        devpost:  { url: "https://devpost.com/hackathons", label: "devpost.com/hackathons", color: "#3fb950" },
+      };
+      function switchPlatform(btn) {
+        document.querySelectorAll(".ptab").forEach(t => t.classList.remove("active"));
+        btn.classList.add("active");
+        const p = platforms[btn.dataset.key];
+        document.getElementById("liveFrame").src = p.url;
+        document.getElementById("urlText").textContent = p.label;
+        document.getElementById("urlDot").style.background = p.color;
+        document.getElementById("openTabBtn").href = p.url;
+        document.getElementById("directLink").href = p.url;
+      }
+
+      // ── CLIENT-SIDE FILTER (filters Django-rendered cards by data attributes) ──
+      function applyFilters() {
+        const loc    = document.getElementById("locFilter").value;
+        const month  = document.getElementById("monthFilter").value;
+        const status = document.getElementById("statusFilter").value;
+        const q      = document.getElementById("searchInput").value.toLowerCase();
+        const cards  = document.querySelectorAll(".hack-card");
+        let visible  = 0;
+
+        cards.forEach(card => {
+          const show = (loc    === "all" || card.dataset.loc    === loc) &&
+                       (month  === "all" || card.dataset.month  === month) &&
+                       (status === "all" || card.dataset.status === status) &&
+                       (!q || card.dataset.title.includes(q) || card.dataset.org.includes(q) || card.dataset.tags.includes(q));
+          card.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+
+        document.getElementById("resCount").textContent = visible;
+        const empty = document.getElementById("emptyState");
+        if (empty) empty.style.display = visible === 0 ? "" : "none";
+      }
+
+      function resetFilters() {
+        document.getElementById("locFilter").value = "all";
+        document.getElementById("monthFilter").value = "all";
+        document.getElementById("statusFilter").value = "all";
+        document.getElementById("searchInput").value = "";
+        applyFilters();
+      }
+
+      // ── LIKE (Django API endpoint: POST /api/hackathons/<id>/like/) ──
+      function getCookie(name) {
+        return document.cookie.split(";").map(c => c.trim()).find(c => c.startsWith(name + "="))?.split("=")[1] || "";
+      }
+      async function toggleLike(btn, id) {
+        const countEl = btn.querySelector(".like-count");
+        try {
+          const res = await fetch(`/api/hackathons/${id}/like/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCookie("csrftoken"), "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            btn.classList.toggle("liked", data.liked);
+            countEl.textContent = data.likes_count;
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      // ── SHARE HACKATHON MODAL ──
+      function openModal()  { document.getElementById("postOverlay").classList.add("open"); document.body.style.overflow = "hidden"; }
+      function closeModal() { document.getElementById("postOverlay").classList.remove("open"); document.body.style.overflow = ""; }
+
+      document.getElementById("postOverlay").addEventListener("click", function(e) { if (e.target === this) closeModal(); });
+
+      // POST to Django API: POST /api/hackathons/create/
+      async function submitPost() {
+        const title = document.getElementById("fTitle").value.trim();
+        const org   = document.getElementById("fOrg").value.trim();
+        const desc  = document.getElementById("fDesc").value.trim();
+        const link  = document.getElementById("fLink").value.trim();
+        const msg   = document.getElementById("modalMsg");
+
+        if (!title || !org || !desc || !link) { msg.style.color = "#f85149"; msg.textContent = "Please fill in all required fields."; return; }
+        if (!link.startsWith("http")) { msg.style.color = "#f85149"; msg.textContent = "Please enter a valid URL starting with https://"; return; }
+
+        const payload = {
+          title, organizer: org, description: desc,
+          location: document.getElementById("fLoc").value,
+          month: parseInt(document.getElementById("fMonth").value),
+          status: document.getElementById("fStatus").value,
+          mode: document.getElementById("fMode").value,
+          tags: document.getElementById("fTags").value,
+          registration_link: link,
+        };
+
+        try {
+          const res = await fetch("/api/hackathons/create/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            msg.style.color = "#56d364";
+            msg.textContent = "✓ Hackathon shared! Pending review.";
+            setTimeout(() => { closeModal(); location.reload(); }, 1500);
+          } else {
+            const err = await res.json();
+            msg.style.color = "#f85149";
+            msg.textContent = err.error || "Something went wrong.";
+          }
+        } catch (e) { msg.style.color = "#f85149"; msg.textContent = "Network error. Try again."; }
+      }
+    </script>
+  </body>
+</html>

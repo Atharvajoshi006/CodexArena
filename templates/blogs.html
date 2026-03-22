@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodexArena — Blogs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0d1117; --line: rgba(255,255,255,0.06); --accent: #2f81f7; --accent2: #58a6ff;
+        --green: #56d364; --pink: #f778ba; --text: #e8edf5; --muted: #4b5675; --muted2: #8892a4;
+        --tag-bg: rgba(48,54,61,0.5); --tag-border: rgba(124,58,237,0.22); --hover: rgba(255,255,255,0.025);
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; display: flex; justify-content: center; }
+      body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); }
+      .shell { display: flex; width: 100%; max-width: 1080px; min-height: 100vh; }
+
+      .sidebar { width: 260px; flex-shrink: 0; border-right: 1px solid var(--line); padding: 28px 20px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+      .logo { font-family: "Outfit",sans-serif; font-weight: 800; font-size: 17px; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 3px; padding: 8px 10px; margin-bottom: 16px; }
+      .lb { color: var(--accent2); }
+      .ld { width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-left: 5px; animation: blink 2.5s infinite; }
+      @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+      .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: var(--muted2); font-size: 13px; transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: "Plus Jakarta Sans",sans-serif; }
+      .nav-item:hover { background: var(--hover); color: var(--text); }
+      .nav-item.active { color: var(--text); background: var(--hover); }
+      .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+      .sidebar-divider { height: 1px; background: var(--line); margin: 10px 0; }
+      .tag-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; }
+      .sidebar-tag { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; border-radius: 8px; border: none; background: none; color: var(--muted2); font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; width: 100%; }
+      .sidebar-tag:hover { background: var(--hover); color: var(--text); }
+      .sidebar-tag.active { background: rgba(47,129,247,0.1); color: var(--accent2); }
+      .tag-count { font-size: 10px; color: var(--muted); }
+      .btn-post-sidebar { margin-top: 8px; padding: 11px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; cursor: pointer; transition: background 0.2s; width: 100%; }
+      .btn-post-sidebar:hover { background: var(--accent2); }
+
+      .feed { flex: 1; border-right: 1px solid var(--line); min-height: 100vh; }
+      .feed-header { position: sticky; top: 0; z-index: 10; padding: 16px 20px; background: rgba(8,12,20,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; }
+      .feed-title { font-family: "Outfit",sans-serif; font-weight: 800; font-size: 15px; }
+      .search-box { flex: 1; position: relative; }
+      .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); pointer-events: none; }
+      .search-box input { width: 100%; padding: 7px 12px 7px 30px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: var(--text); font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; outline: none; }
+      .search-box input:focus { border-color: rgba(47,129,247,0.4); }
+
+      .compose { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; }
+      .compose-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),#1a6ed8); display: flex; align-items: center; justify-content: center; font-family: "Outfit",sans-serif; font-size: 11px; font-weight: 800; color: white; flex-shrink: 0; }
+      .compose-right { flex: 1; }
+      .compose-input { width: 100%; background: none; border: none; outline: none; color: var(--text); font-family: "Plus Jakarta Sans",sans-serif; font-size: 14px; resize: none; line-height: 1.6; }
+      .compose-input::placeholder { color: var(--muted); }
+      .compose-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+      .compose-tags-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+      .compose-tag-pick { font-size: 11px; padding: 3px 9px; border-radius: 20px; border: 1px solid var(--tag-border); background: var(--tag-bg); color: var(--muted2); cursor: pointer; transition: all 0.15s; font-family: "Plus Jakarta Sans",sans-serif; }
+      .compose-tag-pick:hover, .compose-tag-pick.sel { background: rgba(47,129,247,0.15); border-color: var(--accent2); color: var(--accent2); }
+      .char-count { font-size: 10px; color: var(--muted); }
+      .btn-publish { padding: 7px 18px; background: var(--accent); color: white; border: none; border-radius: 20px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+      .btn-publish:hover { background: var(--accent2); }
+      .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; }
+      .compose-hint { font-size: 11px; color: var(--muted); padding: 10px 20px 0; }
+      .compose-hint a { color: var(--accent2); text-decoration: none; }
+
+      .post { padding: 16px 20px; border-bottom: 1px solid var(--line); transition: background 0.1s; }
+      .post:hover { background: var(--hover); }
+      .p-head { display: flex; gap: 12px; align-items: flex-start; }
+      .p-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: "Outfit",sans-serif; font-size: 11px; font-weight: 800; color: white; flex-shrink: 0; }
+      .p-meta { flex: 1; }
+      .p-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+      .p-name { font-size: 13px; font-weight: 700; }
+      .p-handle { font-size: 11px; color: var(--muted); }
+      .p-time { font-size: 10px; color: var(--muted); margin-left: auto; }
+      .p-text { font-size: 13px; line-height: 1.65; margin: 8px 0; white-space: pre-wrap; word-break: break-word; padding-left: 48px; }
+      .p-tag-chip { font-size: 10px; color: var(--accent2); background: rgba(47,129,247,0.1); border: 1px solid rgba(47,129,247,0.2); padding: 2px 8px; border-radius: 20px; margin-left: 48px; display: inline-block; margin-bottom: 8px; }
+      .p-actions { display: flex; gap: 6px; padding-left: 48px; }
+      .act-btn { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted2); background: none; border: 1px solid transparent; border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: all 0.15s; font-family: "Plus Jakarta Sans",sans-serif; }
+      .act-btn:hover { color: var(--text); border-color: var(--line); background: var(--hover); }
+      .act-btn.liked { color: #f85149; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.06); }
+      .act-icon { font-size: 13px; }
+      .empty { display: none; text-align: center; padding: 48px 20px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+      .right-panel { width: 280px; flex-shrink: 0; padding: 20px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+      .panel-block { background: rgba(255,255,255,0.025); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+      .panel-block h3 { font-family: "Outfit",sans-serif; font-size: 14px; font-weight: 800; margin-bottom: 14px; }
+      .trending-item { padding: 8px 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: opacity 0.15s; }
+      .trending-item:last-child { border-bottom: none; padding-bottom: 0; }
+      .trending-item:hover { opacity: 0.75; }
+      .trending-tag { font-size: 11px; color: var(--accent2); margin-bottom: 2px; }
+      .trending-title { font-size: 12px; color: var(--text); line-height: 1.4; }
+      .trending-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
+      .who-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+      .who-item:last-child { border-bottom: none; }
+      .who-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+      .who-info { flex: 1; min-width: 0; }
+      .who-name { font-size: 12px; color: var(--text); }
+      .who-handle { font-size: 11px; color: var(--muted); }
+      .btn-follow { font-size: 11px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 20px; background: none; color: var(--text); cursor: pointer; font-family: "Plus Jakarta Sans",sans-serif; transition: all 0.15s; white-space: nowrap; }
+      .btn-follow:hover { border-color: var(--accent2); color: var(--accent2); }
+      .btn-follow.following { background: rgba(47,129,247,0.15); border-color: var(--accent2); color: var(--accent2); }
+      @media (max-width: 900px) { .right-panel { display: none; } }
+      @media (max-width: 640px) { .sidebar { width: 56px; padding: 16px 8px; } .nav-item span:not(.nav-icon) { display: none; } .logo span:not(.lb):not(.ld) { display: none; } .sidebar-tag span:not(.tag-count),.tag-label,.btn-post-sidebar { display: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <a href="/" class="logo"><span class="lb">{</span><span>CodexArena</span><span class="lb">}</span><span class="ld"></span></a>
+        <a href="/" class="nav-item"><span class="nav-icon">⌂</span><span>Home</span></a>
+        <a href="/blogs/" class="nav-item active"><span class="nav-icon">//</span><span>Blogs</span></a>
+        <a href="/hackathons/" class="nav-item"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
+        {% if user.is_authenticated %}
+          <a href="/profile/" class="nav-item"><span class="nav-icon">◉</span><span>Profile</span></a>
+        {% endif %}
+        <div class="sidebar-divider"></div>
+        <div class="tag-section">
+          <span class="tag-label">Topics</span>
+          <!-- Tag counts are passed from Django view context: {{ tag_counts }} -->
+          <button class="sidebar-tag active" data-tag="all" onclick="setTag(this,'all')"><span># all</span><span class="tag-count">{{ total_posts|default:"0" }}</span></button>
+          {% for tag in tags %}
+            <button class="sidebar-tag" data-tag="{{ tag.name }}" onclick="setTag(this,'{{ tag.name }}')"><span># {{ tag.name }}</span><span class="tag-count">{{ tag.post_count }}</span></button>
+          {% empty %}
+            <button class="sidebar-tag" data-tag="hackathon" onclick="setTag(this,'hackathon')"><span># hackathon</span><span class="tag-count">0</span></button>
+            <button class="sidebar-tag" data-tag="tips" onclick="setTag(this,'tips')"><span># tips</span><span class="tag-count">0</span></button>
+            <button class="sidebar-tag" data-tag="ai" onclick="setTag(this,'ai')"><span># ai</span><span class="tag-count">0</span></button>
+          {% endfor %}
+        </div>
+        <div style="margin-top:auto;padding:8px 0">
+          {% if user.is_authenticated %}
+            <span style="font-size:11px;color:var(--muted);display:block;padding:0 12px;margin-bottom:8px;">{{ user.username }}</span>
+            <form method="POST" action="/logout/" style="width:100%">
+              {% csrf_token %}
+              <button type="submit" class="nav-item" style="color:var(--muted)"><span class="nav-icon">→</span><span>Sign out</span></button>
+            </form>
+          {% else %}
+            <a href="/login/" class="nav-item"><span class="nav-icon">→</span><span>Sign in</span></a>
+          {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+          <button class="btn-post-sidebar" onclick="focusCompose()">+ New Post</button>
+        {% endif %}
+      </aside>
+
+      <!-- FEED -->
+      <main class="feed">
+        <div class="feed-header">
+          <span class="feed-title">// blogs</span>
+          <div class="search-box">
+            <span class="search-icon">⌕</span>
+            <input type="text" id="searchInput" placeholder="search posts..." oninput="renderPosts()" />
+          </div>
+        </div>
+
+        <!-- COMPOSE BOX -->
+        {% if user.is_authenticated %}
+          <div class="compose">
+            <div class="compose-avatar" id="composeAvatar">{{ user.username|slice:":2"|upper }}</div>
+            <div class="compose-right">
+              <textarea class="compose-input" id="composeText" placeholder="// share something with the dev community..." rows="2" oninput="updateCharCount()"></textarea>
+              <div class="compose-footer">
+                <div class="compose-tags-row" id="composeTags">
+                  <span style="font-size:11px;color:var(--muted);margin-right:4px">#</span>
+                  <button class="compose-tag-pick" data-tag="hackathon" onclick="pickTag(this)">hackathon</button>
+                  <button class="compose-tag-pick" data-tag="tips" onclick="pickTag(this)">tips</button>
+                  <button class="compose-tag-pick" data-tag="api" onclick="pickTag(this)">api</button>
+                  <button class="compose-tag-pick" data-tag="mvp" onclick="pickTag(this)">mvp</button>
+                  <button class="compose-tag-pick" data-tag="ai" onclick="pickTag(this)">ai</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="char-count" id="charCount">0 / 280</span>
+                  <button class="btn-publish" id="publishBtn" onclick="publishPost()">Post</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="compose-hint"><a href="/login/">Sign in</a> to share your dev experience with the community.</div>
+        {% endif %}
+
+        <!-- POSTS — Django renders from DB, JS filters them client-side -->
+        <div id="postFeed">
+          {% for post in posts %}
+            <div class="post" data-tag="{{ post.tag }}" data-text="{{ post.content|lower }}" data-id="{{ post.id }}">
+              <div class="p-head">
+                <div class="p-av" style="background:{{ post.author.profile.avatar_gradient|default:'linear-gradient(135deg,#2f81f7,#58a6ff)' }}">{{ post.author.username|slice:":2"|upper }}</div>
+                <div class="p-meta">
+                  <div class="p-name-row">
+                    <span class="p-name">{{ post.author.get_full_name|default:post.author.username }}</span>
+                    <span class="p-handle">@{{ post.author.username }}</span>
+                    <span class="p-time">{{ post.created_at|timesince }} ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="p-text">{{ post.content }}</div>
+              <span class="p-tag-chip"># {{ post.tag }}</span>
+              <div class="p-actions">
+                <button class="act-btn {% if post.id in user_liked_post_ids %}liked{% endif %}"
+                        onclick="toggleLike(this, {{ post.id }})">
+                  <span class="act-icon">{% if post.id in user_liked_post_ids %}♥{% else %}♡{% endif %}</span>
+                  <span class="like-count">{{ post.likes_count }}</span>
+                </button>
+                <button class="act-btn" style="color:var(--muted)"><span class="act-icon">◎</span><span>{{ post.comments_count }}</span></button>
+              </div>
+            </div>
+          {% empty %}
+            <!-- No posts from DB yet — will be empty until users post -->
+          {% endfor %}
+        </div>
+        <div class="empty" id="emptyState">
+          <div style="font-size:28px;margin-bottom:8px">( ˘ ³˘)</div>
+          no posts found.<br />try a different search or tag.
+        </div>
+      </main>
+
+      <!-- RIGHT PANEL -->
+      <aside class="right-panel">
+        <div class="panel-block">
+          <h3>Trending</h3>
+          {% for t in trending_posts %}
+            <div class="trending-item" onclick="setTagByName('{{ t.tag }}')">
+              <div class="trending-tag"># {{ t.tag }}</div>
+              <div class="trending-title">{{ t.content|truncatewords:8 }}</div>
+              <div class="trending-count">{{ t.likes_count }} likes</div>
+            </div>
+          {% empty %}
+            <div class="trending-item" onclick="setTagByName('hackathon')"><div class="trending-tag"># hackathon</div><div class="trending-title">How We Won Our First Hackathon</div><div class="trending-count">142 likes</div></div>
+            <div class="trending-item" onclick="setTagByName('ai')"><div class="trending-tag"># ai</div><div class="trending-title">How AI Tools Changed Our Hackathon Game</div><div class="trending-count">103 likes</div></div>
+          {% endfor %}
+        </div>
+
+        <div class="panel-block">
+          <h3>Who to follow</h3>
+          {% for u in suggested_users %}
+            <div class="who-item">
+              <div class="who-avatar" style="background:{{ u.profile.avatar_gradient|default:'linear-gradient(135deg,#2f81f7,#58a6ff)' }}">{{ u.username|slice:":2"|upper }}</div>
+              <div class="who-info">
+                <div class="who-name">{{ u.get_full_name|default:u.username }}</div>
+                <div class="who-handle">@{{ u.username }}</div>
+              </div>
+              <button class="btn-follow {% if u.id in user_following_ids %}following{% endif %}"
+                      onclick="toggleFollow(this, {{ u.id }})">
+                {% if u.id in user_following_ids %}Following{% else %}Follow{% endif %}
+              </button>
+            </div>
+          {% empty %}
+            <div class="who-item">
+              <div class="who-avatar" style="background:linear-gradient(135deg,#2f81f7,#58a6ff)">AJ</div>
+              <div class="who-info"><div class="who-name">Atharva Joshi</div><div class="who-handle">@atharva · AIML</div></div>
+              <button class="btn-follow" onclick="toggleFollow(this, null)">Follow</button>
+            </div>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      // ── CSRF helper ──
+      function getCookie(name) {
+        return document.cookie.split(";").map(c => c.trim()).find(c => c.startsWith(name + "="))?.split("=")[1] || "";
+      }
+
+      // ── TAG FILTER (client-side on Django-rendered posts) ──
+      let activeTag = "all";
+      function setTag(el, tag) {
+        activeTag = tag;
+        document.querySelectorAll(".sidebar-tag").forEach(b => b.classList.remove("active"));
+        el.classList.add("active");
+        renderPosts();
+      }
+      function setTagByName(tag) {
+        const btn = document.querySelector(`.sidebar-tag[data-tag="${tag}"]`);
+        if (btn) setTag(btn, tag);
+      }
+      function focusCompose() { document.getElementById("composeText")?.focus(); }
+
+      function renderPosts() {
+        const q = (document.getElementById("searchInput")?.value || "").toLowerCase();
+        const posts = document.querySelectorAll("#postFeed .post");
+        let visible = 0;
+        posts.forEach(p => {
+          const tagMatch = activeTag === "all" || p.dataset.tag === activeTag;
+          const searchMatch = !q || p.dataset.text.includes(q);
+          const show = tagMatch && searchMatch;
+          p.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+        document.getElementById("emptyState").style.display = visible === 0 ? "block" : "none";
+      }
+
+      // ── COMPOSE ──
+      let selectedTag = "";
+      function pickTag(btn) {
+        document.querySelectorAll(".compose-tag-pick").forEach(b => b.classList.remove("sel"));
+        if (selectedTag === btn.dataset.tag) { selectedTag = ""; }
+        else { btn.classList.add("sel"); selectedTag = btn.dataset.tag; }
+      }
+      function updateCharCount() {
+        const val = document.getElementById("composeText")?.value || "";
+        const el = document.getElementById("charCount");
+        if (el) el.textContent = `${val.length} / 280`;
+      }
+
+      // POST to Django: POST /api/blogs/create/
+      async function publishPost() {
+        const textEl = document.getElementById("composeText");
+        const text = textEl?.value.trim();
+        if (!text || text.length > 280) return;
+        const btn = document.getElementById("publishBtn");
+        btn.disabled = true;
+        btn.textContent = "Posting…";
+        try {
+          const res = await fetch("/api/blogs/create/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+            body: JSON.stringify({ content: text, tag: selectedTag || "general" }),
+          });
+          if (res.ok) {
+            textEl.value = "";
+            selectedTag = "";
+            document.querySelectorAll(".compose-tag-pick").forEach(b => b.classList.remove("sel"));
+            updateCharCount();
+            location.reload(); // reload to show new post from DB
+          } else {
+            const err = await res.json();
+            alert(err.error || "Failed to post.");
+          }
+        } catch (e) { alert("Network error. Try again."); }
+        btn.disabled = false;
+        btn.textContent = "Post";
+      }
+
+      // POST to Django: POST /api/blogs/<id>/like/
+      async function toggleLike(btn, id) {
+        const countEl = btn.querySelector(".like-count");
+        const iconEl  = btn.querySelector(".act-icon");
+        try {
+          const res = await fetch(`/api/blogs/${id}/like/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            btn.classList.toggle("liked", data.liked);
+            iconEl.textContent = data.liked ? "♥" : "♡";
+            countEl.textContent = data.likes_count;
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      // POST to Django: POST /api/users/<id>/follow/
+      async function toggleFollow(btn, userId) {
+        if (!userId) return; // static fallback, no-op
+        try {
+          const res = await fetch(`/api/users/${userId}/follow/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            btn.classList.toggle("following", data.following);
+            btn.textContent = data.following ? "Following" : "Follow";
+          }
+        } catch (e) { console.error(e); }
+      }
+    </script>
+  </body>
+</html>
