@@ -166,3 +166,100 @@ class Hackathon(models.Model):
     @property
     def posted_by_color(self):
         return getattr(self.posted_by, "profile", None) and self.posted_by.profile.avatar_gradient or "linear-gradient(135deg,#2f81f7,#58a6ff)"
+
+
+# ─── TEAM RECRUITMENT ─────────────────────────────────────────────────────────
+
+class Team(models.Model):
+    STATUS_CHOICES = [
+        ("recruiting", "🔍 Recruiting"),
+        ("full",       "✓ Full"),
+        ("closed",     "✕ Closed"),
+    ]
+    CATEGORY_CHOICES = [
+        ("web",      "Web Development"),
+        ("mobile",   "Mobile App"),
+        ("ai-ml",    "AI/ML"),
+        ("backend",  "Backend"),
+        ("devops",   "DevOps"),
+        ("design",   "Design"),
+        ("other",    "Other"),
+    ]
+
+    name             = models.CharField(max_length=200)
+    description      = models.TextField()
+    category         = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default="other")
+    status           = models.CharField(max_length=15, choices=STATUS_CHOICES, default="recruiting")
+    skills_required  = models.CharField(max_length=500, blank=True, default="")  # comma-separated
+    members_needed   = models.PositiveSmallIntegerField(default=2, help_text="Target team size")
+    
+    leader           = models.ForeignKey(User, on_delete=models.CASCADE, related_name="teams_led")
+    members          = models.ManyToManyField(User, blank=True, related_name="teams_in", through="TeamMember")
+    pending_invites  = models.ManyToManyField(User, blank=True, related_name="team_invites", through="TeamInvite")
+    
+    created_at       = models.DateTimeField(auto_now_add=True)
+    updated_at       = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def members_count(self):
+        return self.members.count() + 1  # +1 for leader
+
+    @property
+    def skills_list(self):
+        return [s.strip() for s in self.skills_required.split(",") if s.strip()]
+
+    @property
+    def open_slots(self):
+        return max(0, self.members_needed - self.members_count)
+
+
+class TeamMember(models.Model):
+    ROLE_CHOICES = [
+        ("backend",  "Backend Developer"),
+        ("frontend", "Frontend Developer"),
+        ("fullstack","Full-Stack Developer"),
+        ("design",   "Designer"),
+        ("devops",   "DevOps Engineer"),
+        ("ml",       "ML Engineer"),
+        ("other",    "Other"),
+    ]
+
+    team       = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="member_records")
+    user       = models.ForeignKey(User, on_delete=models.CASCADE, related_name="team_roles")
+    role       = models.CharField(max_length=20, choices=ROLE_CHOICES, default="other")
+    joined_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("team", "user")
+        ordering = ["joined_at"]
+
+    def __str__(self):
+        return f"{self.user.username} in {self.team.name}"
+
+
+class TeamInvite(models.Model):
+    STATUS_CHOICES = [
+        ("pending",  "Pending"),
+        ("accepted", "Accepted"),
+        ("declined", "Declined"),
+    ]
+
+    team       = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="invite_records")
+    user       = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_invites")
+    status     = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    message    = models.TextField(blank=True, default="Join our team!")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("team", "user")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Invite from {self.team.name} to {self.user.username}"

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import Profile, BlogPost, BlogComment, Hackathon
+from .models import Profile, BlogPost, BlogComment, Hackathon, Team, TeamMember, TeamInvite
 
 
 # ─── PROFILE INLINE ──────────────────────────────────────────────────────────
@@ -73,3 +73,56 @@ class HackathonAdmin(admin.ModelAdmin):
             "fields": ("posted_by", "created_at")
         }),
     )
+
+
+# ─── TEAM ────────────────────────────────────────────────────────────────────
+
+class TeamMemberInline(admin.TabularInline):
+    model = TeamMember
+    extra = 1
+    fields = ("user", "role")
+
+
+class TeamInviteInline(admin.TabularInline):
+    model = TeamInvite
+    extra = 1
+    fields = ("user", "status", "message")
+
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ("name", "category", "status", "leader", "members_count", "open_slots", "created_at")
+    list_filter = ("status", "category", "created_at")
+    search_fields = ("name", "description", "leader__username")
+    readonly_fields = ("created_at", "updated_at")
+    fieldsets = (
+        ("Basic Info", {
+            "fields": ("name", "description", "leader")
+        }),
+        ("Details", {
+            "fields": ("category", "status", "skills_required")
+        }),
+        ("Team Size", {
+            "fields": ("members_needed",)
+        }),
+        ("Meta", {
+            "fields": ("created_at", "updated_at")
+        }),
+    )
+    inlines = [TeamMemberInline, TeamInviteInline]
+
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = ("user", "team", "role", "joined_at")
+    list_filter = ("role", "team", "joined_at")
+    search_fields = ("user__username", "team__name")
+    readonly_fields = ("joined_at",)
+
+
+@admin.register(TeamInvite)
+class TeamInviteAdmin(admin.ModelAdmin):
+    list_display = ("team", "user", "status", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("team__name", "user__username")
+    readonly_fields = ("created_at", "updated_at")

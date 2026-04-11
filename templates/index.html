@@ -1,268 +1,892 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodexArena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #0d1117; --bg2: #161b22; --bg3: #1c2128;
-        --accent: #2f81f7; --accent2: #58a6ff;
-        --green: #3fb950; --green2: #56d364;
-        --text: #f1f5f9; --muted: #94a3b8;
-        --border: rgba(48,54,61,0.9); --card-bg: rgba(17,24,39,0.8);
+        --bg: #07111f;
+        --bg-soft: rgba(9, 20, 38, 0.82);
+        --panel: rgba(11, 24, 43, 0.78);
+        --panel-strong: rgba(8, 18, 34, 0.96);
+        --line: rgba(125, 161, 210, 0.18);
+        --line-strong: rgba(125, 161, 210, 0.32);
+        --text: #edf4ff;
+        --muted: #94a8c6;
+        --accent: #58a6ff;
+        --accent-strong: #2f81f7;
+        --green: #4ade80;
+        --green-soft: rgba(74, 222, 128, 0.14);
+        --amber: #f7b955;
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 14px;
       }
+
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { background: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", sans-serif; overflow-x: hidden; }
-      body::before { content: ""; position: fixed; inset: 0; background-image: linear-gradient(rgba(48,54,61,0.3) 1px,transparent 1px), linear-gradient(90deg,rgba(48,54,61,0.3) 1px,transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
-      .orb { position: fixed; border-radius: 50%; filter: blur(140px); opacity: 0.6; pointer-events: none; z-index: 0; }
-      .orb-1 { width: 600px; height: 600px; background: rgba(48,54,61,0.7); top: -200px; left: -200px; animation: drift1 12s ease-in-out infinite alternate; }
-      .orb-2 { width: 400px; height: 400px; background: rgba(63,185,80,0.07); bottom: 200px; right: -100px; animation: drift2 15s ease-in-out infinite alternate; }
-      @keyframes drift1 { to { transform: translate(60px,80px); } }
-      @keyframes drift2 { to { transform: translate(-60px,-50px); } }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: "Manrope", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(47, 129, 247, 0.18), transparent 30%),
+          radial-gradient(circle at 85% 20%, rgba(74, 222, 128, 0.14), transparent 24%),
+          linear-gradient(180deg, #08101d 0%, #07111f 45%, #050d18 100%);
+        color: var(--text);
+        overflow-x: hidden;
+      }
 
-      header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 18px 60px; background: rgba(6,10,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
-      .logo { font-family: "Outfit", sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
-      .logo-bracket { color: var(--accent2); }
-      .logo-text { color: var(--text); }
-      .logo-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
-      @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.8); } }
-      nav { display: flex; align-items: center; gap: 8px; }
-      nav a { text-decoration: none; color: var(--muted); font-size: 13px; padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; transition: all 0.2s; }
-      nav a:hover { color: var(--text); border-color: var(--border); background: rgba(48,54,61,0.4); }
-      .btn-nav { background: var(--accent) !important; color: white !important; border-color: transparent !important; }
-      .btn-nav:hover { background: var(--accent2) !important; }
-      /* Auth-aware nav items — controlled by Django context */
-      .nav-auth-logged-in { display: none; }
-      .nav-auth-logged-out { display: flex; align-items: center; gap: 8px; }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(88, 166, 255, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(88, 166, 255, 0.06) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(180deg, rgba(0,0,0,0.55), transparent 82%);
+        pointer-events: none;
+        z-index: 0;
+      }
 
-      .hero { position: relative; z-index: 1; min-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 20px; }
-      .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--green2); background: rgba(63,185,80,0.06); border: 1px solid rgba(16,185,129,0.2); padding: 6px 14px; border-radius: 100px; margin-bottom: 32px; letter-spacing: 0.1em; text-transform: uppercase; animation: fadeInDown 0.6s ease both; }
-      .hero-tag::before { content: ""; width: 6px; height: 6px; background: var(--green2); border-radius: 50%; }
-      .hero h1 { font-family: "Outfit", sans-serif; font-size: clamp(48px,8vw,88px); font-weight: 800; line-height: 1; letter-spacing: -1.5px; margin-bottom: 24px; animation: fadeInDown 0.6s 0.1s ease both; }
-      .hero h1 .line2 { display: block; background: linear-gradient(135deg, var(--accent2), var(--green2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-      .hero-sub { max-width: 560px; font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 40px; animation: fadeInDown 0.6s 0.2s ease both; }
-      .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; animation: fadeInDown 0.6s 0.3s ease both; }
-      .btn-primary { padding: 14px 32px; background: linear-gradient(135deg,var(--accent),#1a6ed8); color: white; border: none; border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s; }
-      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(47,129,247,0.4); }
-      .btn-ghost { padding: 14px 32px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s; }
-      .btn-ghost:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-2px); }
-      .hero-stats { display: flex; gap: 48px; margin-top: 64px; flex-wrap: wrap; justify-content: center; animation: fadeInDown 0.6s 0.4s ease both; }
-      .stat { text-align: center; }
-      .stat-num { font-family: "Outfit",sans-serif; font-size: 32px; font-weight: 800; background: linear-gradient(135deg,var(--text),var(--muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-      .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.05em; }
+      .glow {
+        position: fixed;
+        border-radius: 999px;
+        filter: blur(120px);
+        opacity: 0.55;
+        pointer-events: none;
+        z-index: 0;
+      }
 
-      section.content { position: relative; z-index: 1; padding: 80px 60px; max-width: 1200px; margin: 0 auto; }
-      .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 40px; }
-      .section-header h2 { font-family: "Outfit",sans-serif; font-size: 28px; font-weight: 800; }
-      .section-num { font-size: 12px; color: var(--accent2); background: rgba(47,129,247,0.12); border: 1px solid rgba(47,129,247,0.2); padding: 3px 10px; border-radius: 4px; }
-      .section-line { flex: 1; height: 1px; background: linear-gradient(to right,var(--border),transparent); }
+      .glow-1 { width: 520px; height: 520px; background: rgba(47, 129, 247, 0.24); top: -180px; left: -120px; }
+      .glow-2 { width: 420px; height: 420px; background: rgba(74, 222, 128, 0.14); right: -140px; top: 220px; }
+      .glow-3 { width: 360px; height: 360px; background: rgba(247, 185, 85, 0.12); left: 30%; bottom: -140px; }
 
-      .hack-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 20px; }
-      .hack-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; position: relative; overflow: hidden; transition: all 0.3s; backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 10px; }
-      .hack-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right,var(--accent),var(--accent2)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
-      .hack-card:hover { border-color: rgba(47,129,247,0.4); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-      .hack-card:hover::before { transform: scaleX(1); }
-      .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-      .hack-status { font-size: 10px; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.07em; text-transform: uppercase; }
-      .hs-open { color: var(--green2); background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); }
-      .hs-trending { color: #e3b341; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); }
-      .hs-upcoming { color: var(--accent2); background: rgba(47,129,247,0.08); border: 1px solid rgba(47,129,247,0.2); }
-      .hs-closing { color: #f85149; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); }
-      .hack-loc { font-size: 10px; color: var(--muted); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 4px; }
-      .org-row { display: flex; align-items: center; gap: 8px; }
-      .org-av { width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: "Outfit",sans-serif; font-size: 9px; font-weight: 800; color: white; }
-      .org-name { font-size: 11px; color: var(--muted); }
-      .card-title { font-family: "Outfit",sans-serif; font-size: 18px; font-weight: 800; line-height: 1.2; }
-      .card-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
-      .card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-      .ctag { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(48,54,61,0.4); border: 1px solid rgba(48,54,61,0.7); color: var(--accent2); }
-      .btn-register { width: 100%; padding: 11px; background: transparent; border: 1px solid var(--green); color: var(--green2); border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; }
-      .btn-register:hover { background: rgba(63,185,80,0.07); border-color: var(--green2); box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+      .page-shell { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 24px; }
 
-      .view-all-wrap { text-align: center; margin-top: 32px; }
-      .btn-view-all { display: inline-flex; align-items: center; gap: 8px; padding: 11px 28px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-      .btn-view-all:hover { border-color: var(--accent2); color: var(--accent2); }
+      header {
+        position: sticky;
+        top: 18px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 16px 22px;
+        background: rgba(5, 13, 24, 0.7);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      }
 
-      .blog-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 20px; }
-      .blog-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; transition: all 0.3s; cursor: pointer; position: relative; }
-      .blog-card:hover { border-color: rgba(47,129,247,0.4); transform: translateY(-4px); }
-      .blog-num { font-family: "Outfit",sans-serif; font-size: 48px; font-weight: 800; color: rgba(48,54,61,0.7); line-height: 1; margin-bottom: 12px; }
-      .blog-card h3 { font-family: "Outfit",sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
-      .blog-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
-      .blog-arrow { position: absolute; bottom: 28px; right: 28px; color: var(--accent2); font-size: 18px; opacity: 0; transform: translate(-4px,4px); transition: all 0.2s; }
-      .blog-card:hover .blog-arrow { opacity: 1; transform: translate(0,0); }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+        color: var(--text);
+      }
 
-      footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-      .footer-logo { font-family: "Outfit",sans-serif; font-weight: 800; font-size: 18px; }
-      .footer-copy { font-size: 12px; color: var(--muted); }
-      .footer-links { display: flex; gap: 20px; }
-      .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-      .footer-links a:hover { color: var(--accent2); }
-      @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(88, 166, 255, 0.18), rgba(74, 222, 128, 0.14));
+        border: 1px solid var(--line-strong);
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        color: var(--accent);
+      }
 
-      .main { display: flex; flex-direction: column; gap: 0.5em; }
-      .up,.down { display: flex; flex-direction: row; gap: 0.5em; }
-      .card1,.card2,.card3,.card4 { width: 90px; height: 90px; background: white; border-radius: 5px; box-shadow: rgba(50,50,93,0.25) 0px 2px 5px -1px,rgba(0,0,0,0.3) 0px 1px 3px -1px; transition: 0.2s ease-in-out; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-      .card1 { border-radius: 90px 5px 5px 5px; } .card2 { border-radius: 5px 90px 5px 5px; } .card3 { border-radius: 5px 5px 5px 90px; } .card4 { border-radius: 5px 5px 90px 5px; }
-      .card1 svg { fill: #00ff00; } .card2 svg { fill: #0077b5; } .card3 svg { fill: #000; } .card4 svg { fill: #8c9eff; }
-      .card1:hover { scale:1.1; background-color:#00ff00; } .card1:hover svg { fill:white; }
-      .card2:hover { scale:1.1; background-color:#0077b5; } .card2:hover svg { fill:white; }
-      .card3:hover { scale:1.1; background-color:black; } .card3:hover svg { fill:white; }
-      .card4:hover { scale:1.1; background-color:#8c9eff; } .card4:hover svg { fill:white; }
-      @media (max-width: 768px) { header { padding: 16px 24px; } section.content { padding: 60px 24px; } footer { padding: 30px 24px; flex-direction: column; text-align: center; } .hero-stats { gap: 32px; } nav a { display: none; } nav .btn-nav { display: inline-block; } }
+      .brand-copy strong {
+        display: block;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        letter-spacing: -0.03em;
+      }
+
+      .brand-copy span {
+        display: block;
+        font-size: 0.76rem;
+        color: var(--muted);
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      nav a,
+      nav button {
+        text-decoration: none;
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 600;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        transition: 0.22s ease;
+        font-family: inherit;
+      }
+
+      nav a:hover,
+      nav button:hover {
+        color: var(--text);
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .btn-nav {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong)) !important;
+        color: white !important;
+        border-color: transparent !important;
+        box-shadow: 0 12px 24px rgba(47, 129, 247, 0.26);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 28px;
+        align-items: stretch;
+        padding: 42px 0 28px;
+      }
+
+      .hero-main,
+      .hero-side,
+      .panel,
+      .feature-card,
+      .blog-card,
+      .stat-card,
+      .footer-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+      }
+
+      .hero-main {
+        border-radius: var(--radius-xl);
+        padding: 34px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-main::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 180px;
+        background: linear-gradient(180deg, transparent, rgba(88, 166, 255, 0.08));
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(74, 222, 128, 0.24);
+        background: rgba(74, 222, 128, 0.08);
+        color: #b8f7ce;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 14px rgba(74, 222, 128, 0.7);
+      }
+
+      h1 {
+        margin-top: 24px;
+        max-width: 10ch;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(3rem, 6vw, 5.7rem);
+        line-height: 0.96;
+        letter-spacing: -0.06em;
+      }
+
+      h1 span {
+        display: block;
+        color: transparent;
+        background: linear-gradient(135deg, #dff2ff 0%, #84befd 45%, #71f1a2 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .hero-sub {
+        margin-top: 24px;
+        max-width: 640px;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+
+      .hero-actions {
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .action,
+      .action-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: 0.22s ease;
+      }
+
+      .action {
+        color: white;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        box-shadow: 0 14px 32px rgba(47, 129, 247, 0.32);
+      }
+
+      .action-secondary {
+        color: var(--text);
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .action:hover,
+      .action-secondary:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero-stats {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .stat-card {
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .stat-card strong {
+        display: block;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.65rem;
+        letter-spacing: -0.05em;
+      }
+
+      .stat-card span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.83rem;
+      }
+
+      .hero-side {
+        border-radius: var(--radius-xl);
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .code-window {
+        background: rgba(4, 10, 18, 0.8);
+        border: 1px solid rgba(125, 161, 210, 0.16);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .code-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(125, 161, 210, 0.12);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .dots { display: flex; gap: 8px; }
+      .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.16); }
+      .dots span:nth-child(1) { background: #ff6b6b; }
+      .dots span:nth-child(2) { background: #f7b955; }
+      .dots span:nth-child(3) { background: #4ade80; }
+
+      pre {
+        padding: 20px;
+        overflow-x: auto;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.88rem;
+        line-height: 1.8;
+        color: #d9e8ff;
+      }
+
+      .token-key { color: #7dd3fc; }
+      .token-str { color: #86efac; }
+      .token-note { color: #f7b955; }
+
+      .hero-side-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .feature-card {
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .feature-card strong {
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 8px;
+      }
+
+      .feature-card p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      section {
+        padding-top: 28px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+
+      .section-no {
+        padding: 7px 10px;
+        border-radius: 10px;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        font-weight: 800;
+        color: var(--accent);
+        background: rgba(88, 166, 255, 0.1);
+        border: 1px solid rgba(88, 166, 255, 0.16);
+      }
+
+      .section-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.8rem;
+        letter-spacing: -0.04em;
+      }
+
+      .section-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--line-strong), transparent);
+      }
+
+      .hack-grid,
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
+      }
+
+      .panel {
+        border-radius: 22px;
+        padding: 22px;
+      }
+
+      .hack-card {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hack-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--green));
+      }
+
+      .card-top,
+      .org-row,
+      .blog-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .hack-status,
+      .hack-loc,
+      .ctag,
+      .blog-tag,
+      .mini-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+      }
+
+      .hs-open { color: #b8f7ce; background: rgba(74, 222, 128, 0.12); border-color: rgba(74, 222, 128, 0.2); }
+      .hs-trending { color: #ffe2aa; background: rgba(247, 185, 85, 0.12); border-color: rgba(247, 185, 85, 0.18); }
+      .hs-upcoming { color: #c9e2ff; background: rgba(88, 166, 255, 0.12); border-color: rgba(88, 166, 255, 0.18); }
+      .hs-closing { color: #ffb8b8; background: rgba(248, 81, 73, 0.12); border-color: rgba(248, 81, 73, 0.2); }
+      .hack-loc { color: var(--muted); background: rgba(255,255,255,0.03); border-color: rgba(125, 161, 210, 0.12); }
+
+      .org-row { margin-top: 18px; }
+
+      .org-av {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+      }
+
+      .org-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+      }
+
+      .org-name { font-size: 0.92rem; color: var(--text); font-weight: 700; }
+      .org-date { color: var(--muted); font-size: 0.8rem; }
+
+      .card-title {
+        margin-top: 18px;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.38rem;
+        line-height: 1.18;
+        letter-spacing: -0.04em;
+      }
+
+      .card-desc,
+      .blog-card p {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 0.94rem;
+        line-height: 1.8;
+      }
+
+      .card-tags {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .ctag {
+        color: var(--accent);
+        background: rgba(88, 166, 255, 0.08);
+        border-color: rgba(88, 166, 255, 0.16);
+      }
+
+      .btn-register,
+      .view-all {
+        margin-top: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px 16px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        color: var(--text);
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        transition: 0.22s ease;
+      }
+
+      .btn-register:hover,
+      .view-all:hover {
+        border-color: rgba(74, 222, 128, 0.24);
+        background: rgba(74, 222, 128, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .view-all-wrap { margin-top: 18px; text-align: center; }
+      .view-all { width: auto; min-width: 220px; }
+
+      .blog-card {
+        border-radius: 22px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.22s ease;
+      }
+
+      .blog-card:hover,
+      .panel:hover {
+        transform: translateY(-4px);
+        border-color: var(--line-strong);
+      }
+
+      .blog-card::before {
+        content: "";
+        position: absolute;
+        right: -36px;
+        top: -36px;
+        width: 120px;
+        height: 120px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(88, 166, 255, 0.18), transparent 70%);
+      }
+
+      .blog-num {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2.7rem;
+        letter-spacing: -0.08em;
+        color: rgba(201, 226, 255, 0.24);
+      }
+
+      .blog-card h3 {
+        margin-top: 14px;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.25rem;
+        line-height: 1.25;
+        letter-spacing: -0.04em;
+      }
+
+      .blog-meta {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .blog-tag {
+        color: #b9f7cc;
+        background: rgba(74, 222, 128, 0.1);
+        border-color: rgba(74, 222, 128, 0.16);
+      }
+
+      .foot-grid {
+        margin-top: 28px;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr 0.8fr;
+        gap: 18px;
+      }
+
+      .footer-card {
+        border-radius: 22px;
+        padding: 22px;
+      }
+
+      .footer-card h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.08rem;
+        margin-bottom: 12px;
+      }
+
+      .footer-card p,
+      .footer-card a,
+      .footer-meta {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.8;
+      }
+
+      .footer-card a {
+        text-decoration: none;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .socials {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .socials a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        transition: 0.22s ease;
+      }
+
+      .socials a:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+      .socials svg { width: 20px; height: 20px; fill: var(--text); }
+
+      footer {
+        padding: 26px 4px 6px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      @media (max-width: 1080px) {
+        .hero { grid-template-columns: 1fr; }
+        .foot-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 720px) {
+        .page-shell { padding: 16px; }
+        header { top: 10px; padding: 14px 16px; }
+        nav { gap: 8px; }
+        nav a, nav button { padding: 9px 12px; font-size: 0.86rem; }
+        .hero-main, .hero-side, .panel, .blog-card, .footer-card { padding: 20px; }
+        .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .hero-side-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 520px) {
+        .brand-copy span { display: none; }
+        nav a:not(.btn-nav) { display: none; }
+        h1 { max-width: none; }
+        .hero-stats { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
 
-    <header>
-      <div class="logo">
-        <span class="logo-bracket">{</span>
-        <span class="logo-text">CodexArena</span>
-        <span class="logo-bracket">}</span>
-        <span class="logo-dot"></span>
-      </div>
-      <nav>
-        <a href="/hackathons/">Hackathons</a>
-        <a href="/blogs/">Blogs</a>
-        {% if user.is_authenticated %}
-          <!-- Shown when user is logged in — Django sets `user` in template context automatically -->
-          <a href="/profile/">{{ user.username }}</a>
-          <form method="POST" action="/logout/" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" style="background:none;border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;">Logout</button>
-          </form>
-        {% else %}
-          <!-- Shown when user is not logged in -->
-          <a href="/login/">Login</a>
-          <a href="/signup/" class="btn-nav">Sign Up</a>
-        {% endif %}
-      </nav>
-    </header>
+    <div class="page-shell">
+      <header>
+        <a href="/" class="brand">
+          <span class="brand-mark">&lt;/&gt;</span>
+          <span class="brand-copy">
+            <strong>CodexArena</strong>
+            <span>Discover hackathons. Publish dev stories. Build with your people.</span>
+          </span>
+        </a>
+        <nav>
+          <a href="/hackathons/">Hackathons</a>
+          <a href="/teams/">Teams</a>
+          <a href="/blogs/">Blogs</a>
+          {% if user.is_authenticated %}
+            <a href="/profile/">{{ user.username }}</a>
+            <form method="POST" action="/logout/" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit">Logout</button>
+            </form>
+          {% else %}
+            <a href="/login/">Login</a>
+            <a href="/signup/" class="btn-nav">Create Account</a>
+          {% endif %}
+        </nav>
+      </header>
 
-    <div class="hero" style="position:relative;z-index:1">
-      <span class="hero-tag">Developer Platform · SJCIT AIML</span>
-      <h1>Code.<br /><span class="line2">Compete. Conquer.</span></h1>
-      <p class="hero-sub">Discover hackathons, share experiences through blogs, and connect with the dev community. Built for students by Atharva Joshi.</p>
-      <div class="hero-cta">
-        <a href="/hackathons/"><button class="btn-primary">Explore Hackathons →</button></a>
-        <a href="/blogs/"><button class="btn-ghost">Read Blogs</button></a>
-      </div>
-      <div class="hero-stats">
-        <!-- These stats can be passed from Django view context: {{ hackathon_count }}, etc. -->
-        <div class="stat"><div class="stat-num">{{ hackathon_count|default:"50+" }}</div><div class="stat-label">Hackathons</div></div>
-        <div class="stat"><div class="stat-num">₹3L+</div><div class="stat-label">In Prizes</div></div>
-        <div class="stat"><div class="stat-num">{{ user_count|default:"200+" }}</div><div class="stat-label">Developers</div></div>
-        <div class="stat"><div class="stat-num">24</div><div class="stat-label">Hours To Ship</div></div>
-      </div>
+      <section class="hero">
+        <div class="hero-main">
+          <span class="eyebrow">Built for coders at speed</span>
+          <h1>Ship ideas. <span>Win hackathons.</span></h1>
+          <p class="hero-sub">CodexArena gives student builders one clean place to discover serious hackathons, read practical dev blogs, and stay close to the community that actually ships. The backend stays exactly the same. The experience now feels like a modern product.</p>
+          <div class="hero-actions">
+            <a href="/hackathons/" class="action">Explore Hackathons</a>
+            <a href="/blogs/" class="action-secondary">Read Community Blogs</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-card">
+              <strong>{{ hackathon_count|default:"50+" }}</strong>
+              <span>Curated hackathons</span>
+            </div>
+            <div class="stat-card">
+              <strong>Rs3L+</strong>
+              <span>Prize pools tracked</span>
+            </div>
+            <div class="stat-card">
+              <strong>{{ user_count|default:"200+" }}</strong>
+              <span>Active developers</span>
+            </div>
+            <div class="stat-card">
+              <strong>24 hrs</strong>
+              <span>To build and launch</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-side">
+          <div class="code-window">
+            <div class="code-bar">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <span>arena.config</span>
+            </div>
+            <pre><span class="token-key">platform</span> = <span class="token-str">"CodexArena"</span>
+<span class="token-key">mode</span>     = <span class="token-str">"builder-first"</span>
+<span class="token-key">focus</span>    = [<span class="token-str">"hackathons"</span>, <span class="token-str">"blogs"</span>, <span class="token-str">"community"</span>]
+<span class="token-note"># discover faster, publish cleaner, compete harder</span></pre>
+          </div>
+          <div class="hero-side-grid">
+            <div class="feature-card">
+              <strong>Signal over noise</strong>
+              <p>Cleaner event browsing, stronger hierarchy, and better visual scanning for developers.</p>
+            </div>
+            <div class="feature-card">
+              <strong>Community-led</strong>
+              <p>Read stories from builders who have already shipped, failed, learned, and won.</p>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <span class="section-no">01</span>
+          <h2 class="section-title">Featured Hackathons</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="hack-grid" id="featuredGrid">
+          {% for h in featured_hackathons %}
+            <article class="panel hack-card">
+              <div class="card-top">
+                <span class="hack-status hs-{{ h.status }}">{{ h.get_status_display }}</span>
+                <span class="hack-loc">{{ h.location_display }}</span>
+              </div>
+              <div class="org-row">
+                <div class="org-av" style="background:{{ h.org_color }}22;color:{{ h.org_color }};border:1px solid {{ h.org_color }}44;">{{ h.org_initials }}</div>
+                <div class="org-copy">
+                  <span class="org-name">{{ h.organizer }}</span>
+                  <span class="org-date">{{ h.month_year }}</span>
+                </div>
+                <span class="mini-badge" style="color:var(--amber);background:rgba(247,185,85,0.1);border-color:rgba(247,185,85,0.16);">Live listing</span>
+              </div>
+              <div class="card-title">{{ h.title }}</div>
+              <div class="card-desc">{{ h.description }}</div>
+              <div class="card-tags">{% for tag in h.tags_list %}<span class="ctag">{{ tag }}</span>{% endfor %}</div>
+              <a class="btn-register" href="{{ h.registration_link }}" target="_blank">Open Registration</a>
+            </article>
+          {% empty %}
+            <div id="jsHackFallback"></div>
+          {% endfor %}
+        </div>
+        <div class="view-all-wrap">
+          <a href="/hackathons/" class="view-all">Browse all hackathons</a>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <span class="section-no">02</span>
+          <h2 class="section-title">Latest Blogs</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="blog-grid">
+          {% for blog in recent_blogs %}
+            <article class="blog-card" onclick="location.href='/blogs/'">
+              <div class="blog-num">0{{ forloop.counter }}</div>
+              <h3>{{ blog.content|truncatewords:8 }}</h3>
+              <p>{{ blog.content|truncatewords:20 }}</p>
+              <div class="blog-meta">
+                <span>@{{ blog.author.username }}</span>
+                <span class="blog-tag">#{{ blog.tag }}</span>
+              </div>
+            </article>
+          {% empty %}
+            <article class="blog-card" onclick="location.href='/blogs/'">
+              <div class="blog-num">01</div>
+              <h3>How We Won Our First Hackathon</h3>
+              <p>Hard-earned lessons on shipping a tighter MVP, communicating clearly, and making demos memorable.</p>
+              <div class="blog-meta">
+                <span>Community story</span>
+                <span class="blog-tag">#hackathon</span>
+              </div>
+            </article>
+            <article class="blog-card" onclick="location.href='/blogs/'">
+              <div class="blog-num">02</div>
+              <h3>Top APIs for Fast Prototypes</h3>
+              <p>Useful APIs that reduce build time when you only have a weekend to prove your product works.</p>
+              <div class="blog-meta">
+                <span>Builder guide</span>
+                <span class="blog-tag">#api</span>
+              </div>
+            </article>
+            <article class="blog-card" onclick="location.href='/blogs/'">
+              <div class="blog-num">03</div>
+              <h3>Designing MVPs Under Pressure</h3>
+              <p>A practical blueprint for choosing what to build now, what to fake, and what to skip completely.</p>
+              <div class="blog-meta">
+                <span>Execution notes</span>
+                <span class="blog-tag">#mvp</span>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="foot-grid">
+        <div class="footer-card">
+          <h3>Why this redesign works</h3>
+          <p>The site now feels more product-grade for developers: stronger typography, cleaner spacing, clearer actions, richer depth, and a more intentional visual identity.</p>
+        </div>
+        <div class="footer-card">
+          <h3>Quick Links</h3>
+          <div class="footer-links">
+            <a href="/hackathons/">Hackathons</a>
+            <a href="/blogs/">Blogs</a>
+            <a href="/signup/">Create account</a>
+          </div>
+        </div>
+        <div class="footer-card">
+          <h3>Connect</h3>
+          <div class="socials">
+            <a href="https://web.whatsapp.com/" target="_blank" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24"><path d="M19.001 4.908A9.817 9.817 0 0 0 11.992 2C6.534 2 2.085 6.448 2.08 11.908c0 1.748.458 3.45 1.321 4.956L2 22l5.255-1.377a9.916 9.916 0 0 0 4.737 1.206h.005c5.46 0 9.908-4.448 9.913-9.913A9.872 9.872 0 0 0 19 4.908Zm-7.009 15.242A8.216 8.216 0 0 1 7.797 19l-.3-.18-3.117.818.833-3.041-.196-.314a8.2 8.2 0 0 1-1.258-4.381c0-4.533 3.696-8.23 8.239-8.23a8.2 8.2 0 0 1 5.825 2.413 8.196 8.196 0 0 1 2.41 5.825c-.006 4.55-3.702 8.24-8.24 8.24Zm4.52-6.167c-.247-.124-1.463-.723-1.692-.808-.228-.08-.394-.123-.556.124-.166.246-.641.808-.784.969-.143.166-.29.185-.537.062-.247-.125-1.045-.385-1.99-1.23-.738-.657-1.232-1.47-1.38-1.716-.142-.247-.013-.38.11-.504.11-.11.247-.29.37-.432.126-.143.167-.248.248-.413.082-.167.043-.31-.018-.433-.063-.124-.557-1.345-.765-1.838-.2-.486-.404-.419-.557-.425-.142-.009-.309-.009-.475-.009a.911.911 0 0 0-.661.31c-.228.247-.864.845-.864 2.067 0 1.22.888 2.395 1.013 2.56.122.167 1.742 2.666 4.229 3.74.587.257 1.05.408 1.41.523.595.19 1.13.162 1.558.1.475-.072 1.464-.6 1.673-1.178.205-.58.205-1.075.142-1.18-.061-.104-.227-.165-.475-.29Z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/atharva-joshi-6a9188320/" target="_blank" aria-label="LinkedIn">
+              <svg viewBox="0 0 448 512"><path d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z"/></svg>
+            </a>
+            <a href="https://github.com/Atharvajoshi006" target="_blank" aria-label="GitHub">
+              <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.8.5 12.35c0 5.24 3.3 9.68 7.88 11.25.58.11.79-.26.79-.57 0-.28-.01-1.2-.02-2.17-3.2.71-3.88-1.39-3.88-1.39-.52-1.37-1.28-1.73-1.28-1.73-1.05-.74.08-.73.08-.73 1.16.08 1.77 1.23 1.77 1.23 1.04 1.83 2.72 1.3 3.38 1 .1-.78.4-1.3.73-1.6-2.55-.3-5.23-1.31-5.23-5.84 0-1.29.45-2.35 1.19-3.18-.12-.3-.52-1.53.11-3.2 0 0 .97-.32 3.19 1.22a10.68 10.68 0 0 1 5.8 0c2.22-1.54 3.18-1.22 3.18-1.22.63 1.67.24 2.9.12 3.2.74.83 1.19 1.89 1.19 3.18 0 4.54-2.69 5.54-5.25 5.83.42.37.79 1.08.79 2.18 0 1.58-.01 2.85-.01 3.24 0 .31.21.69.8.57A11.88 11.88 0 0 0 23.5 12.35C23.5 5.8 18.35.5 12 .5Z"/></svg>
+            </a>
+            <a href="https://discord.gg/p82qRdcB" target="_blank" aria-label="Discord">
+              <svg viewBox="0 0 24 24"><path d="M20.32 4.37A18.96 18.96 0 0 0 15.56 3l-.23.46a17.58 17.58 0 0 1 4.38 1.37A14.24 14.24 0 0 0 12 3.65a14.2 14.2 0 0 0-7.7 1.18A17.28 17.28 0 0 1 8.68 3.46L8.45 3A18.84 18.84 0 0 0 3.68 4.37C1.01 8.35.29 12.23.65 16.06A19 19 0 0 0 6.5 19l.94-1.54c-.53-.2-1.04-.45-1.52-.74.13.1.27.2.42.29A13.38 13.38 0 0 0 12 18.18a13.38 13.38 0 0 0 5.66-1.17c.15-.09.29-.19.42-.29-.48.29-.99.54-1.52.74L17.5 19a19 19 0 0 0 5.85-2.94c.42-4.44-.72-8.28-3.03-11.69ZM9.55 14.4c-.84 0-1.53-.8-1.53-1.78 0-.98.67-1.78 1.53-1.78.86 0 1.55.8 1.53 1.78 0 .98-.67 1.78-1.53 1.78Zm4.9 0c-.84 0-1.53-.8-1.53-1.78 0-.98.67-1.78 1.53-1.78.86 0 1.55.8 1.53 1.78 0 .98-.67 1.78-1.53 1.78Z"/></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span class="footer-meta">Built for developers at SJCIT AIML.</span>
+        <span class="footer-meta">Copyright 2026 CodexArena</span>
+      </footer>
     </div>
-
-    <!-- FEATURED HACKATHONS — Django renders from DB via context variable `featured_hackathons` -->
-    <section class="content">
-      <div class="section-header">
-        <span class="section-num">01</span>
-        <h2>Featured Hackathons</h2>
-        <div class="section-line"></div>
-      </div>
-      <div class="hack-grid" id="featuredGrid">
-        {% for h in featured_hackathons %}
-          <div class="hack-card">
-            <div class="card-top">
-              <span class="hack-status hs-{{ h.status }}">{{ h.get_status_display }}</span>
-              <span class="hack-loc">{{ h.location_display }}</span>
-            </div>
-            <div class="org-row">
-              <div class="org-av" style="background:{{ h.org_color }}22;color:{{ h.org_color }};border:1px solid {{ h.org_color }}33">{{ h.org_initials }}</div>
-              <span class="org-name">{{ h.organizer }}</span>
-              <span style="margin-left:auto;font-size:10px;color:var(--muted)">{{ h.month_year }}</span>
-            </div>
-            <div class="card-title">{{ h.title }}</div>
-            <div class="card-desc">{{ h.description }}</div>
-            <div class="card-tags">{% for tag in h.tags_list %}<span class="ctag">{{ tag }}</span>{% endfor %}</div>
-            <a class="btn-register" href="{{ h.registration_link }}" target="_blank">Register →</a>
-          </div>
-        {% empty %}
-          <!-- Fallback: static JS renders if Django context is empty (e.g., during development) -->
-          <div id="jsHackFallback"></div>
-        {% endfor %}
-      </div>
-      <div class="view-all-wrap">
-        <a href="/hackathons/" class="btn-view-all">View all hackathons →</a>
-      </div>
-    </section>
-
-    <!-- BLOGS — Django renders from DB via context variable `recent_blogs` -->
-    <section class="content" style="padding-top:0">
-      <div class="section-header">
-        <span class="section-num">02</span>
-        <h2>Latest Blogs</h2>
-        <div class="section-line"></div>
-      </div>
-      <div class="blog-grid">
-        {% for blog in recent_blogs %}
-          <div class="blog-card" onclick="location.href='/blogs/{{ blog.slug }}/'">
-            <div class="blog-num">0{{ forloop.counter }}</div>
-            <h3>{{ blog.title }}</h3>
-            <p>{{ blog.excerpt }}</p>
-            <span class="blog-arrow">→</span>
-          </div>
-        {% empty %}
-          <!-- Static fallback cards if no blogs in DB yet -->
-          <div class="blog-card" onclick="location.href='/blogs/'">
-            <div class="blog-num">01</div>
-            <h3>How We Won Our First Hackathon</h3>
-            <p>Tips and lessons from our winning project — what worked, what didn't, and what we'd do differently.</p>
-            <span class="blog-arrow">→</span>
-          </div>
-          <div class="blog-card" onclick="location.href='/blogs/'">
-            <div class="blog-num">02</div>
-            <h3>Top APIs for Hackathons</h3>
-            <p>5 APIs that can help you build faster and ship a working product before the clock runs out.</p>
-            <span class="blog-arrow">→</span>
-          </div>
-          <div class="blog-card" onclick="location.href='/blogs/'">
-            <div class="blog-num">03</div>
-            <h3>Building an MVP in 24 Hours</h3>
-            <p>A tactical guide to scoping, building, and shipping an MVP when every minute counts.</p>
-            <span class="blog-arrow">→</span>
-          </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <footer>
-      <div>
-        <div class="footer-logo">{CodexArena}</div>
-        <div class="footer-copy" style="margin-top:6px">Built for Developers · SJCIT AIML</div>
-      </div>
-      <div class="footer-links">
-        <a href="/hackathons/">Hackathons</a>
-        <a href="/blogs/">Blogs</a>
-        <a href="/signup/">Sign Up</a>
-      </div>
-      <div class="footer-copy">© 2026 CodexArena</div>
-      <div class="main">
-        <div class="up">
-          <a class="card1" href="https://web.whatsapp.com/" target="_blank" aria-label="WhatsApp">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="30" width="30"><path d="M19.001 4.908A9.817 9.817 0 0 0 11.992 2C6.534 2 2.085 6.448 2.08 11.908c0 1.748.458 3.45 1.321 4.956L2 22l5.255-1.377a9.916 9.916 0 0 0 4.737 1.206h.005c5.46 0 9.908-4.448 9.913-9.913A9.872 9.872 0 0 0 19 4.908h.001ZM11.992 20.15A8.216 8.216 0 0 1 7.797 19l-.3-.18-3.117.818.833-3.041-.196-.314a8.2 8.2 0 0 1-1.258-4.381c0-4.533 3.696-8.23 8.239-8.23a8.2 8.2 0 0 1 5.825 2.413 8.196 8.196 0 0 1 2.41 5.825c-.006 4.55-3.702 8.24-8.24 8.24Zm4.52-6.167c-.247-.124-1.463-.723-1.692-.808-.228-.08-.394-.123-.556.124-.166.246-.641.808-.784.969-.143.166-.29.185-.537.062-.247-.125-1.045-.385-1.99-1.23-.738-.657-1.232-1.47-1.38-1.716-.142-.247-.013-.38.11-.504.11-.11.247-.29.37-.432.126-.143.167-.248.248-.413.082-.167.043-.31-.018-.433-.063-.124-.557-1.345-.765-1.838-.2-.486-.404-.419-.557-.425-.142-.009-.309-.009-.475-.009a.911.911 0 0 0-.661.31c-.228.247-.864.845-.864 2.067 0 1.22.888 2.395 1.013 2.56.122.167 1.742 2.666 4.229 3.74.587.257 1.05.408 1.41.523.595.19 1.13.162 1.558.1.475-.072 1.464-.6 1.673-1.178.205-.58.205-1.075.142-1.18-.061-.104-.227-.165-.475-.29Z"/></svg>
-          </a>
-          <a class="card2" href="https://www.linkedin.com/in/atharva-joshi-6a9188320/" target="_blank" aria-label="LinkedIn">
-            <svg xmlns="http://www.w3.org/2000/svg" height="1.6em" viewBox="0 0 448 512"><path d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z"/></svg>
-          </a>
-        </div>
-        <div class="down">
-          <a class="card3" href="https://github.com/Atharvajoshi006" target="_blank" aria-label="GitHub">
-            <svg height="30px" width="30px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><path d="M15,3C8.373,3,3,8.373,3,15c0,5.623,3.872,10.328,9.092,11.63C12.036,26.468,12,26.28,12,26.047v-2.051 c-0.487,0-1.303,0-1.508,0c-0.821,0-1.551-0.353-1.905-1.009c-0.393-0.729-0.461-1.844-1.435-2.526 c-0.289-0.227-0.069-0.486,0.264-0.451c0.615,0.174,1.125,0.596,1.605,1.222c0.478,0.627,0.703,0.769,1.596,0.769 c0.433,0,1.081-0.025,1.691-0.121c0.328-0.833,0.895-1.6,1.588-1.962c-3.996-0.411-5.903-2.399-5.903-5.098 c0-1.162,0.495-2.286,1.336-3.233C9.053,10.647,8.706,8.73,9.435,8c1.798,0,2.885,1.166,3.146,1.481C13.477,9.174,14.461,9,15.495,9 c1.036,0,2.024,0.174,2.922,0.483C18.675,9.17,19.763,8,21.565,8c0.732,0.731,0.381,2.656,0.102,3.594 c0.836,0.945,1.328,2.066,1.328,3.226c0,2.697-1.904,4.684-5.894,5.097C18.199,20.49,19,22.1,19,23.313v2.734 c0,0.104-0.023,0.179-0.035,0.268C23.641,24.676,27,20.236,27,15C27,8.373,21.627,3,15,3z"/></svg>
-          </a>
-          <a class="card4" href="https://discord.gg/p82qRdcB" target="_blank" aria-label="Discord">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="30px" height="30px"><path d="M40,12c0,0-4.585-3.588-10-4l-0.488,0.976C34.408,10.174,36.654,11.891,39,14c-4.045-2.065-8.039-4-15-4s-10.955,1.935-15,4c2.346-2.109,5.018-4.015,9.488-5.024L18,8c-5.681,0.537-10,4-10,4s-5.121,7.425-6,22c5.162,5.953,13,6,13,6l1.639-2.185C13.857,36.848,10.715,35.121,8,32c3.238,2.45,8.125,5,16,5s12.762-2.55,16-5c-2.715,3.121-5.857,4.848-8.639,5.815L33,40c0,0,7.838-0.047,13-6C45.121,19.425,40,12,40,12z M17.5,30c-1.933,0-3.5-1.791-3.5-4c0-2.209,1.567-4,3.5-4s3.5,1.791,3.5,4C21,28.209,19.433,30,17.5,30z M30.5,30c-1.933,0-3.5-1.791-3.5-4c0-2.209,1.567-4,3.5-4s3.5,1.791,3.5,4C34,28.209,32.433,30,30.5,30z"/></svg>
-          </a>
-        </div>
-      </div>
-    </footer>
   </body>
 </html>

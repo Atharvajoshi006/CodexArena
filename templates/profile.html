@@ -1,157 +1,360 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodexArena — Profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <title>CodexArena - Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #0d1117; --line: rgba(255,255,255,0.06); --accent: #2f81f7; --accent2: #58a6ff;
-        --green: #56d364; --pink: #f778ba; --text: #e8edf5; --muted: #4b5675; --muted2: #8892a4;
-        --glass: rgba(255,255,255,0.04); --glass-b: rgba(255,255,255,0.08); --hover: rgba(255,255,255,0.025);
+        --bg: #07111f;
+        --panel: rgba(8, 18, 34, 0.86);
+        --panel-strong: rgba(7, 16, 30, 0.95);
+        --line: rgba(125, 161, 210, 0.16);
+        --line-strong: rgba(125, 161, 210, 0.3);
+        --text: #edf4ff;
+        --muted: #95a8c6;
+        --accent: #58a6ff;
+        --accent-strong: #2f81f7;
+        --green: #4ade80;
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { background: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; display: flex; justify-content: center; }
-      body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); }
-      .shell { display: flex; width: 100%; max-width: 1080px; min-height: 100vh; }
-
-      .sidebar { width: 240px; flex-shrink: 0; border-right: 1px solid var(--line); padding: 28px 16px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
-      .logo { font-family: "Outfit",sans-serif; font-weight: 800; font-size: 17px; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 3px; padding: 8px 10px; margin-bottom: 16px; }
-      .lb { color: var(--accent2); }
-      .ld { width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-left: 5px; animation: blink 2.5s infinite; }
-      @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
-      .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: var(--muted2); font-size: 13px; transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: "Plus Jakarta Sans",sans-serif; }
-      .nav-item:hover { background: var(--hover); color: var(--text); }
-      .nav-item.active { color: var(--text); background: var(--hover); }
-      .nav-icon { font-size: 15px; width: 20px; text-align: center; }
-      .sidebar-div { height: 1px; background: var(--line); margin: 10px 0; }
-
-      .main { flex: 1; border-right: 1px solid var(--line); min-height: 100vh; overflow-y: auto; }
-      .topbar { position: sticky; top: 0; z-index: 10; padding: 14px 20px; background: rgba(8,12,20,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; }
-      .back-btn { background: none; border: none; color: var(--muted2); font-size: 16px; cursor: pointer; transition: color 0.15s; padding: 4px; }
-      .back-btn:hover { color: var(--text); }
-      .topbar-info h2 { font-family: "Outfit",sans-serif; font-size: 15px; font-weight: 800; }
-      .topbar-info span { font-size: 11px; color: var(--muted); }
-
-      .banner { height: 140px; background: linear-gradient(135deg,#1a0a3a 0%,#0d1f3c 40%,#0a1f14 100%); position: relative; overflow: hidden; }
-      .banner::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(48,54,61,0.4) 1px,transparent 1px), linear-gradient(90deg,rgba(48,54,61,0.4) 1px,transparent 1px); background-size: 32px 32px; }
-      .banner-edit { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-b); color: var(--muted2); font-size: 12px; padding: 5px 12px; border-radius: 20px; cursor: pointer; backdrop-filter: blur(8px); font-family: "Plus Jakarta Sans",sans-serif; transition: all 0.2s; }
-      .banner-edit:hover { color: var(--text); border-color: var(--accent2); }
-
-      .profile-top { padding: 0 24px; position: relative; margin-bottom: 16px; }
-      .avatar-wrap { position: absolute; top: -44px; left: 24px; }
-      .avatar { width: 88px; height: 88px; border-radius: 50%; border: 4px solid var(--bg); display: flex; align-items: center; justify-content: center; font-family: "Outfit",sans-serif; font-size: 28px; font-weight: 800; color: white; cursor: pointer; position: relative; overflow: hidden; background: linear-gradient(135deg,var(--accent),#1a6ed8); }
-      .avatar-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-size: 20px; opacity: 0; transition: opacity 0.2s; }
+      body {
+        font-family: "Manrope", sans-serif;
+        background:
+          radial-gradient(circle at 10% 0%, rgba(88,166,255,0.22), transparent 26%),
+          radial-gradient(circle at 85% 18%, rgba(74,222,128,0.12), transparent 22%),
+          linear-gradient(180deg, #08101d 0%, #07111f 48%, #050d18 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient(rgba(88,166,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(88,166,255,0.05) 1px, transparent 1px);
+        background-size: 46px 46px;
+        pointer-events: none;
+      }
+      .shell {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr) 300px;
+        gap: 18px;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 18px;
+      }
+      .sidebar, .main, .rp, .rp-block, .post, .profile-card, .banner, .overlay .modal {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.34);
+      }
+      .sidebar, .main, .rp { border-radius: 28px; overflow: hidden; }
+      .sidebar {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        position: sticky;
+        top: 18px;
+        height: calc(100vh - 36px);
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--text);
+        text-decoration: none;
+        padding: 12px;
+        margin-bottom: 6px;
+      }
+      .logo-mark {
+        width: 40px; height: 40px; border-radius: 14px;
+        display: grid; place-items: center;
+        background: linear-gradient(135deg, rgba(88,166,255,0.2), rgba(74,222,128,0.12));
+        border: 1px solid var(--line-strong);
+        font-family: "Space Grotesk", sans-serif; font-weight: 700; color: var(--accent);
+      }
+      .logo-copy strong { display: block; font-family: "Space Grotesk", sans-serif; }
+      .logo-copy span { display: block; color: var(--muted); font-size: 0.78rem; }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--muted);
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+        font: inherit;
+        font-weight: 700;
+      }
+      .nav-item:hover, .nav-item.active { color: var(--text); border-color: var(--line); background: rgba(255,255,255,0.04); }
+      .main { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+      .topbar {
+        display: flex; align-items: center; gap: 14px;
+        padding: 16px 18px; border-radius: 22px;
+        background: var(--panel-strong); border: 1px solid var(--line);
+      }
+      .back-btn {
+        width: 40px; height: 40px; border-radius: 14px;
+        border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer;
+      }
+      .topbar-info h2 { font-family: "Space Grotesk", sans-serif; font-size: 1.2rem; }
+      .topbar-info span { color: var(--muted); font-size: 0.88rem; }
+      .banner {
+        min-height: 210px;
+        border-radius: 28px;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 15% 15%, rgba(88,166,255,0.26), transparent 24%),
+          radial-gradient(circle at 80% 20%, rgba(74,222,128,0.14), transparent 20%),
+          linear-gradient(135deg, #0c1b30 0%, #091525 55%, #06111d 100%);
+      }
+      .banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(rgba(88,166,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(88,166,255,0.08) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+      .banner-edit {
+        position: absolute; top: 18px; right: 18px;
+        padding: 10px 14px; border-radius: 14px;
+        border: 1px solid var(--line); background: rgba(7,16,30,0.75); color: var(--text); cursor: pointer;
+      }
+      .profile-card {
+        border-radius: 28px;
+        padding: 22px;
+        margin-top: -72px;
+        position: relative;
+        z-index: 2;
+      }
+      .profile-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .profile-id { display: flex; gap: 18px; align-items: center; }
+      .avatar {
+        width: 108px; height: 108px; border-radius: 28px;
+        border: 4px solid rgba(7,16,30,0.92);
+        display: grid; place-items: center;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem; font-weight: 700; color: white;
+        background: linear-gradient(135deg, #58a6ff, #2f81f7);
+        position: relative; overflow: hidden; cursor: pointer;
+      }
+      .avatar img { width: 100%; height: 100%; object-fit: cover; }
+      .avatar-overlay {
+        position: absolute; inset: 0; display: grid; place-items: center;
+        background: rgba(0,0,0,0.42); opacity: 0; transition: 0.2s ease;
+      }
       .avatar:hover .avatar-overlay { opacity: 1; }
-      .profile-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 12px; margin-bottom: 52px; }
-      .btn-edit-profile { padding: 7px 18px; background: transparent; border: 1px solid var(--glass-b); color: var(--text); border-radius: 20px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-      .btn-edit-profile:hover { border-color: var(--accent2); color: var(--accent2); }
-      .profile-info { padding: 0 24px 20px; }
-      .p-name { font-family: "Outfit",sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 2px; }
-      .p-handle { font-size: 12px; color: var(--muted2); margin-bottom: 10px; }
-      .p-bio { font-size: 13px; color: var(--muted2); line-height: 1.65; margin-bottom: 12px; }
-      .p-meta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
-      .p-meta-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
-      .skills-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-      .skill-chip { font-size: 10px; padding: 3px 9px; border-radius: 20px; background: rgba(47,129,247,0.1); border: 1px solid rgba(47,129,247,0.2); color: var(--accent2); }
-      .stat-row { display: flex; gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-      .stat-item { flex: 1; text-align: center; padding: 14px 8px; border-right: 1px solid var(--line); cursor: pointer; transition: background 0.15s; }
-      .stat-item:last-child { border-right: none; }
-      .stat-item:hover { background: var(--hover); }
-      .stat-n { font-family: "Outfit",sans-serif; font-size: 18px; font-weight: 800; }
-      .stat-l { font-size: 10px; color: var(--muted); margin-top: 2px; }
-
-      .tabs { display: flex; border-bottom: 1px solid var(--line); }
-      .tab { flex: 1; padding: 14px; text-align: center; font-size: 13px; color: var(--muted2); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
-      .tab:hover { color: var(--text); }
-      .tab.active { color: var(--text); border-bottom-color: var(--accent2); }
+      .profile-copy h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+      }
+      .p-handle, .p-bio, .p-meta-item, .rp-stat-l { color: var(--muted); }
+      .p-handle { margin-top: 8px; }
+      .p-bio { margin-top: 14px; line-height: 1.85; max-width: 720px; }
+      .p-meta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+      .skills-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+      .skill-chip, .rp-skill {
+        padding: 8px 12px; border-radius: 999px;
+        background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.16); color: var(--accent);
+        font-size: 0.82rem; font-weight: 700;
+      }
+      .btn-edit-profile {
+        padding: 12px 18px; border-radius: 16px;
+        border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text);
+        cursor: pointer; font: inherit; font-weight: 800;
+      }
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .stat-item {
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--line);
+        text-align: center;
+        cursor: pointer;
+      }
+      .stat-n { display: block; font-family: "Space Grotesk", sans-serif; font-size: 1.5rem; }
+      .stat-l { color: var(--muted); font-size: 0.84rem; margin-top: 6px; }
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .tab {
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+        color: var(--muted);
+        text-align: center;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .tab.active { color: var(--text); border-color: var(--line-strong); background: rgba(255,255,255,0.06); }
       .tab-content { display: none; }
-      .tab-content.active { display: block; }
-
-      .post { padding: 16px 20px; border-bottom: 1px solid var(--line); transition: background 0.1s; }
-      .post:hover { background: var(--hover); }
-      .p-header { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
-      .p-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),#1a6ed8); display: flex; align-items: center; justify-content: center; font-family: "Outfit",sans-serif; font-size: 10px; font-weight: 800; color: white; flex-shrink: 0; }
-      .p-name-s { font-size: 13px; font-weight: 700; }
-      .p-handle-s { font-size: 11px; color: var(--muted); }
-      .p-time { font-size: 10px; color: var(--muted); margin-left: auto; }
-      .p-text { font-size: 13px; line-height: 1.65; margin-bottom: 8px; white-space: pre-wrap; padding-left: 40px; }
-      .p-tag { font-size: 10px; color: var(--accent2); background: rgba(47,129,247,0.1); border: 1px solid rgba(47,129,247,0.2); padding: 2px 8px; border-radius: 20px; margin-left: 40px; display: inline-block; margin-bottom: 8px; }
-      .p-actions { display: flex; gap: 6px; padding-left: 40px; }
-      .act-btn { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted2); background: none; border: 1px solid transparent; border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: all 0.15s; font-family: "Plus Jakarta Sans",sans-serif; }
-      .act-btn.liked { color: #f85149; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.06); }
-      .act-icon { font-size: 13px; }
-
-      /* Right panel */
-      .rp { width: 280px; flex-shrink: 0; padding: 20px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-      .rp-block { background: rgba(255,255,255,0.025); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
-      .rp-block h3 { font-family: "Outfit",sans-serif; font-size: 13px; font-weight: 800; margin-bottom: 14px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.06em; }
-      .rp-stat { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+      .tab-content.active { display: grid; gap: 14px; }
+      .post {
+        padding: 20px;
+        border-radius: 24px;
+        transition: 0.2s ease;
+      }
+      .post:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+      .p-header { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      .p-avatar {
+        width: 42px; height: 42px; border-radius: 14px;
+        display: grid; place-items: center;
+        background: linear-gradient(135deg,#58a6ff,#2f81f7);
+        color: white; font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      }
+      .p-name-s { font-weight: 800; }
+      .p-time { color: var(--muted); margin-left: auto; font-size: 0.84rem; }
+      .p-text { margin-top: 14px; margin-left: 54px; line-height: 1.85; color: #dbe8ff; white-space: pre-wrap; }
+      .p-tag { display: inline-flex; margin: 14px 0 10px 54px; padding: 8px 12px; border-radius: 999px; background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.16); color: var(--accent); }
+      .p-actions { display: flex; gap: 10px; margin-left: 54px; }
+      .act-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 10px 14px; border-radius: 14px;
+        border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--muted);
+        cursor: pointer; font: inherit;
+      }
+      .act-btn.liked { color: #ffd5d5; background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.18); }
+      .rp {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        position: sticky;
+        top: 18px;
+        height: calc(100vh - 36px);
+      }
+      .rp-block { border-radius: 24px; padding: 20px; }
+      .rp-block h3 { font-family: "Space Grotesk", sans-serif; font-size: 1rem; margin-bottom: 14px; }
+      .rp-stat {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 0; border-bottom: 1px solid var(--line);
+      }
       .rp-stat:last-child { border-bottom: none; }
-      .rp-stat-l { color: var(--muted2); }
-      .rp-stat-v { font-family: "Outfit",sans-serif; font-weight: 800; color: var(--text); }
-      .rp-skill { font-size: 10px; padding: 3px 9px; border-radius: 20px; background: rgba(47,129,247,0.1); border: 1px solid rgba(47,129,247,0.2); color: var(--accent2); display: inline-block; margin: 2px; }
-
-      /* Edit modal */
-      .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+      .rp-stat-v { font-family: "Space Grotesk", sans-serif; }
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        background: rgba(0,0,0,0.64);
+        backdrop-filter: blur(6px);
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+      }
       .overlay.open { display: flex; }
-      .modal { background: #161b22; border: 1px solid rgba(48,54,61,0.9); border-radius: 16px; padding: 28px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; position: relative; animation: mIn 0.2s ease; }
-      @keyframes mIn { from { opacity:0; transform:scale(0.95) translateY(10px); } }
-      .modal-close { position: absolute; top: 14px; right: 14px; background: var(--glass); border: 1px solid var(--glass-b); color: var(--muted2); width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
-      .modal-close:hover { color: var(--text); }
-      .modal h2 { font-family: "Outfit",sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-      .modal .sub { font-size: 12px; color: var(--muted); margin-bottom: 22px; }
-      .mfields { display: flex; flex-direction: column; gap: 14px; }
-      .mfield { display: flex; flex-direction: column; gap: 5px; }
-      .mfield label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-      .mfield input, .mfield textarea { background: rgba(255,255,255,0.04); border: 1px solid var(--glass-b); border-radius: 8px; color: var(--text); font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; padding: 9px 12px; width: 100%; }
-      .mfield input:focus, .mfield textarea:focus { border-color: rgba(47,129,247,0.45); }
-      .mfield textarea { resize: vertical; min-height: 64px; }
-      .mrow { display: flex; gap: 10px; }
-      .mrow .mfield { flex: 1; }
-      .skill-edit-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
-      .skill-edit-chip { font-size: 10px; padding: 3px 8px; border-radius: 20px; background: rgba(47,129,247,0.1); border: 1px solid rgba(47,129,247,0.2); color: var(--accent2); display: flex; align-items: center; gap: 4px; }
-      .skill-remove { background: none; border: none; color: var(--muted2); cursor: pointer; font-size: 10px; padding: 0; }
-      .skill-add-row { display: flex; gap: 6px; margin-top: 6px; }
-      .skill-add-row input { flex: 1; }
-      .skill-add-row button { padding: 8px 14px; background: var(--accent); border: none; border-radius: 8px; color: white; font-size: 12px; cursor: pointer; font-family: "Plus Jakarta Sans",sans-serif; }
-      .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-      .btn-save { flex: 1; padding: 11px; background: linear-gradient(135deg,var(--accent),#1a6ed8); color: white; border: none; border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; cursor: pointer; }
-      .btn-cancel { padding: 11px 18px; background: var(--glass); border: 1px solid var(--glass-b); color: var(--muted2); border-radius: 8px; font-family: "Plus Jakarta Sans",sans-serif; font-size: 13px; cursor: pointer; }
-      .modal-msg { font-size: 12px; text-align: center; margin-top: 8px; min-height: 16px; }
-      @media (max-width: 900px) { .rp { display: none; } }
-      @media (max-width: 640px) { .sidebar { width: 56px; padding: 16px 8px; } .nav-item span:not(.nav-icon) { display: none; } .logo span:not(.lb):not(.ld) { display: none; } }
+      .modal {
+        width: 100%; max-width: 560px; border-radius: 28px; padding: 24px; max-height: 90vh; overflow-y: auto;
+      }
+      .modal-close {
+        float: right; width: 38px; height: 38px; border-radius: 12px;
+        border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer;
+      }
+      .modal h2 { font-family: "Space Grotesk", sans-serif; font-size: 1.8rem; }
+      .sub { margin-top: 8px; color: var(--muted); line-height: 1.75; }
+      .mfields { display: grid; gap: 14px; margin-top: 20px; }
+      .mfield { display: grid; gap: 8px; }
+      .mfield label {
+        color: var(--muted); font-size: 0.76rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.12em;
+      }
+      .mfield input, .mfield textarea {
+        width: 100%; padding: 14px 16px; border-radius: 16px;
+        border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text); outline: none; font: inherit;
+      }
+      .mfield textarea { min-height: 110px; resize: vertical; }
+      .mrow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .skill-edit-row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .skill-edit-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 12px; border-radius: 999px;
+        background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.16); color: var(--accent);
+      }
+      .skill-remove { border: none; background: transparent; color: var(--muted); cursor: pointer; }
+      .skill-add-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+      .skill-add-row button, .btn-save, .btn-cancel {
+        padding: 14px 16px; border-radius: 16px; font: inherit; font-weight: 800; cursor: pointer;
+      }
+      .skill-add-row button, .btn-save { border: none; background: linear-gradient(135deg, var(--accent), var(--accent-strong)); color: white; }
+      .btn-cancel { border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text); }
+      .modal-btns { display: flex; gap: 12px; margin-top: 18px; }
+      .modal-msg { margin-top: 10px; min-height: 20px; text-align: center; }
+      @media (max-width: 1180px) {
+        .shell { grid-template-columns: 240px minmax(0, 1fr); }
+        .rp { display: none; }
+      }
+      @media (max-width: 820px) {
+        .shell { grid-template-columns: 1fr; }
+        .sidebar, .rp { position: static; height: auto; }
+      }
+      @media (max-width: 620px) {
+        .shell { padding: 12px; }
+        .profile-top, .profile-id { flex-direction: column; align-items: flex-start; }
+        .stat-row, .tabs, .mrow { grid-template-columns: 1fr; }
+        .p-text, .p-tag, .p-actions { margin-left: 0; }
+        .p-header { flex-direction: column; align-items: flex-start; }
+        .p-time { margin-left: 0; }
+      }
     </style>
   </head>
   <body>
     <div class="shell">
-      <!-- SIDEBAR -->
       <aside class="sidebar">
-        <a href="/" class="logo"><span class="lb">{</span><span>CodexArena</span><span class="lb">}</span><span class="ld"></span></a>
-        <a href="/" class="nav-item"><span class="nav-icon">⌂</span><span>Home</span></a>
-        <a href="/blogs/" class="nav-item"><span class="nav-icon">//</span><span>Blogs</span></a>
-        <a href="/hackathons/" class="nav-item"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
-        <a href="/profile/" class="nav-item active"><span class="nav-icon">◉</span><span>Profile</span></a>
-        <div class="sidebar-div"></div>
-        <div style="margin-top:auto;padding:8px 0">
-          <!-- Django: user.username injected from context -->
-          <span style="font-size:11px;color:var(--muted);display:block;padding:0 12px;margin-bottom:8px;">{{ profile_user.username }}</span>
+        <a href="/" class="logo">
+          <span class="logo-mark">&lt;/&gt;</span>
+          <span class="logo-copy">
+            <strong>CodexArena</strong>
+            <span>Builder profile</span>
+          </span>
+        </a>
+        <a href="/" class="nav-item"><span>Home</span><span>01</span></a>
+        <a href="/blogs/" class="nav-item"><span>Blogs</span><span>//</span></a>
+        <a href="/hackathons/" class="nav-item"><span>Hackathons</span><span>02</span></a>
+        <a href="/profile/" class="nav-item active"><span>Profile</span><span>@</span></a>
+        <div style="margin-top:auto;display:grid;gap:10px;">
+          <div style="padding:0 14px;color:var(--muted);font-size:0.9rem;">Viewing <strong style="color:var(--text);">{{ profile_user.username }}</strong></div>
           {% if user == profile_user %}
-            <form method="POST" action="/logout/" style="width:100%">
+            <form method="POST" action="/logout/" style="width:100%;">
               {% csrf_token %}
-              <button type="submit" class="nav-item" style="color:var(--muted)"><span class="nav-icon">→</span><span>Sign out</span></button>
+              <button type="submit" class="nav-item"><span>Sign out</span><span>-&gt;</span></button>
             </form>
           {% endif %}
         </div>
       </aside>
 
-      <!-- MAIN -->
-      <div class="main">
+      <main class="main">
         <div class="topbar">
-          <button class="back-btn" onclick="history.back()">←</button>
+          <button class="back-btn" onclick="history.back()">&lt;</button>
           <div class="topbar-info">
-            <!-- Django: profile_user.get_full_name -->
             <h2 id="topbarName">{{ profile_user.get_full_name|default:profile_user.username }}</h2>
             <span id="topbarPosts">{{ post_count }} posts</span>
           </div>
@@ -163,70 +366,58 @@
           {% endif %}
         </div>
 
-        <div class="profile-top">
-          <div class="avatar-wrap">
-            <!-- Avatar: show profile photo if exists, else initials -->
-            <div class="avatar" id="avatarEl">
-              {% if profile_user.profile.avatar %}
-                <img src="{{ profile_user.profile.avatar.url }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+        <section class="profile-card">
+          <div class="profile-top">
+            <div class="profile-id">
+              <div class="avatar" id="avatarEl">
+                {% if profile_user.profile.avatar %}
+                  <img src="{{ profile_user.profile.avatar.url }}" alt="avatar" />
+                {% else %}
+                  <span id="avatarInitials">{{ profile_user.username|slice:":2"|upper }}</span>
+                {% endif %}
+                {% if user == profile_user %}<div class="avatar-overlay">Edit</div>{% endif %}
+              </div>
+              <div class="profile-copy">
+                <h1 id="profileName">{{ profile_user.get_full_name|default:profile_user.username }}</h1>
+                <div class="p-handle" id="profileHandle">@{{ profile_user.username }}{% if profile_user.profile.college %} · {{ profile_user.profile.college }}{% endif %}</div>
+                <div class="p-bio" id="profileBio">{{ profile_user.profile.bio|default:"No bio yet." }}</div>
+                <div class="p-meta-row">
+                  {% if profile_user.profile.location %}<span class="p-meta-item" id="profileLocation">Location: {{ profile_user.profile.location }}</span>{% endif %}
+                  <span class="p-meta-item">Joined {{ profile_user.date_joined|date:"M Y" }}</span>
+                </div>
+                <div class="skills-row" id="skillsRow">
+                  {% for skill in profile_user.profile.skills_list %}
+                    <span class="skill-chip">{{ skill }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              {% if user == profile_user %}
+                <button class="btn-edit-profile" onclick="openEditModal()">Edit profile</button>
               {% else %}
-                <span id="avatarInitials">{{ profile_user.username|slice:":2"|upper }}</span>
+                <button class="btn-edit-profile {% if is_following %}active-follow{% endif %}" id="followBtn" onclick="toggleFollow()">{% if is_following %}Following{% else %}Follow{% endif %}</button>
               {% endif %}
-              {% if user == profile_user %}<div class="avatar-overlay">📷</div>{% endif %}
             </div>
           </div>
-          <div class="profile-actions">
-            {% if user == profile_user %}
-              <button class="btn-edit-profile" onclick="openEditModal()">Edit profile</button>
-            {% else %}
-              <!-- Follow button for viewing another user's profile -->
-              <button class="btn-edit-profile {% if is_following %}active-follow{% endif %}"
-                      id="followBtn" onclick="toggleFollow()">
-                {% if is_following %}Following{% else %}Follow{% endif %}
-              </button>
-            {% endif %}
-          </div>
-        </div>
-
-        <div class="profile-info">
-          <div class="p-name" id="profileName">{{ profile_user.get_full_name|default:profile_user.username }}</div>
-          <div class="p-handle" id="profileHandle">@{{ profile_user.username }} · {{ profile_user.profile.college|default:"" }}</div>
-          <div class="p-bio" id="profileBio">{{ profile_user.profile.bio|default:"No bio yet." }}</div>
-          <div class="p-meta-row">
-            {% if profile_user.profile.location %}<span class="p-meta-item">📍 <span id="profileLocation">{{ profile_user.profile.location }}</span></span>{% endif %}
-            <span class="p-meta-item">📅 Joined {{ profile_user.date_joined|date:"M Y" }}</span>
-          </div>
-          <div class="skills-row" id="skillsRow">
-            {% for skill in profile_user.profile.skills_list %}
-              <span class="skill-chip">{{ skill }}</span>
-            {% endfor %}
-          </div>
-        </div>
+        </section>
 
         <div class="stat-row">
-          <div class="stat-item" onclick="switchTab(document.querySelector('.tab[data-tab=posts]'),'posts')">
-            <div class="stat-n" id="statPosts">{{ post_count }}</div><div class="stat-l">Posts</div>
-          </div>
-          <div class="stat-item"><div class="stat-n" id="statLikes">{{ total_likes }}</div><div class="stat-l">Likes</div></div>
-          <div class="stat-item" onclick="openFollowModal('followers')">
-            <div class="stat-n" id="statFollowers">{{ followers_count }}</div><div class="stat-l">Followers</div>
-          </div>
-          <div class="stat-item" onclick="openFollowModal('following')">
-            <div class="stat-n" id="statFollowing">{{ following_count }}</div><div class="stat-l">Following</div>
-          </div>
+          <div class="stat-item" onclick="switchTab(document.querySelector('.tab[data-tab=posts]'),'posts')"><span class="stat-n" id="statPosts">{{ post_count }}</span><span class="stat-l">Posts</span></div>
+          <div class="stat-item"><span class="stat-n" id="statLikes">{{ total_likes }}</span><span class="stat-l">Likes</span></div>
+          <div class="stat-item" onclick="openFollowModal('followers')"><span class="stat-n" id="statFollowers">{{ followers_count }}</span><span class="stat-l">Followers</span></div>
+          <div class="stat-item" onclick="openFollowModal('following')"><span class="stat-n" id="statFollowing">{{ following_count }}</span><span class="stat-l">Following</span></div>
         </div>
 
-        <!-- TABS -->
         <div class="tabs">
           <div class="tab active" data-tab="posts" onclick="switchTab(this,'posts')">Posts</div>
           <div class="tab" data-tab="hackathons" onclick="switchTab(this,'hackathons')">Hackathons</div>
           <div class="tab" data-tab="liked" onclick="switchTab(this,'liked')">Liked</div>
         </div>
 
-        <!-- POSTS TAB — Django renders user's posts -->
         <div class="tab-content active" id="tab-posts">
           {% for post in user_posts %}
-            <div class="post">
+            <article class="post">
               <div class="p-header">
                 <div class="p-avatar">{{ profile_user.username|slice:":2"|upper }}</div>
                 <span class="p-name-s">{{ profile_user.get_full_name|default:profile_user.username }}</span>
@@ -236,35 +427,29 @@
               <div class="p-text">{{ post.content }}</div>
               <span class="p-tag"># {{ post.tag }}</span>
               <div class="p-actions">
-                <button class="act-btn {% if post.id in user_liked_post_ids %}liked{% endif %}"
-                        onclick="toggleLike(this, {{ post.id }})">
-                  <span class="act-icon">{% if post.id in user_liked_post_ids %}♥{% else %}♡{% endif %}</span>
-                  <span class="like-count">{{ post.likes_count }}</span>
-                </button>
-                <button class="act-btn" style="color:var(--muted)"><span class="act-icon">◎</span><span>{{ post.comments_count }}</span></button>
+                <button class="act-btn {% if post.id in user_liked_post_ids %}liked{% endif %}" onclick="toggleLike(this, {{ post.id }})"><span class="act-icon">{% if post.id in user_liked_post_ids %}Liked{% else %}Like{% endif %}</span><span class="like-count">{{ post.likes_count }}</span></button>
+                <button class="act-btn" style="color:var(--muted);"><span class="act-icon">Replies</span><span>{{ post.comments_count }}</span></button>
               </div>
-            </div>
+            </article>
           {% empty %}
-            <div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;">No posts yet.</div>
+            <div class="post" style="text-align:center;color:var(--muted);">No posts yet.</div>
           {% endfor %}
         </div>
 
-        <!-- HACKATHONS TAB -->
         <div class="tab-content" id="tab-hackathons">
           {% for h in user_shared_hackathons %}
-            <div style="padding:16px 20px;border-bottom:1px solid var(--line);">
-              <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;margin-bottom:4px;">{{ h.title }}</div>
-              <div style="font-size:11px;color:var(--muted2);">{{ h.organizer }} · {{ h.get_status_display }} · {{ h.location_display }}</div>
-            </div>
+            <article class="post">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:1.2rem;">{{ h.title }}</div>
+              <div style="margin-top:10px;color:var(--muted);line-height:1.8;">{{ h.organizer }} · {{ h.get_status_display }} · {{ h.location_display }}</div>
+            </article>
           {% empty %}
-            <div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;">No hackathons shared yet.</div>
+            <div class="post" style="text-align:center;color:var(--muted);">No hackathons shared yet.</div>
           {% endfor %}
         </div>
 
-        <!-- LIKED TAB -->
         <div class="tab-content" id="tab-liked">
           {% for post in liked_posts %}
-            <div class="post">
+            <article class="post">
               <div class="p-header">
                 <div class="p-avatar">{{ post.author.username|slice:":2"|upper }}</div>
                 <span class="p-name-s">{{ post.author.get_full_name|default:post.author.username }}</span>
@@ -274,21 +459,18 @@
               <div class="p-text">{{ post.content }}</div>
               <span class="p-tag"># {{ post.tag }}</span>
               <div class="p-actions">
-                <button class="act-btn liked" onclick="toggleLike(this, {{ post.id }})">
-                  <span class="act-icon">♥</span><span class="like-count">{{ post.likes_count }}</span>
-                </button>
+                <button class="act-btn liked" onclick="toggleLike(this, {{ post.id }})"><span class="act-icon">Liked</span><span class="like-count">{{ post.likes_count }}</span></button>
               </div>
-            </div>
+            </article>
           {% empty %}
-            <div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;">No liked posts yet.</div>
+            <div class="post" style="text-align:center;color:var(--muted);">No liked posts yet.</div>
           {% endfor %}
         </div>
-      </div>
+      </main>
 
-      <!-- RIGHT PANEL -->
       <aside class="rp">
         <div class="rp-block">
-          <h3>Stats</h3>
+          <h3>Profile stats</h3>
           <div class="rp-stat"><span class="rp-stat-l">Posts</span><span class="rp-stat-v" id="rpPosts">{{ post_count }}</span></div>
           <div class="rp-stat"><span class="rp-stat-l">Likes received</span><span class="rp-stat-v" id="rpLikes">{{ total_likes }}</span></div>
           <div class="rp-stat"><span class="rp-stat-l">Following</span><span class="rp-stat-v" id="rpFollowing">{{ following_count }}</span></div>
@@ -296,36 +478,35 @@
         </div>
         <div class="rp-block">
           <h3>Skills</h3>
-          <div id="rpSkills">
+          <div id="rpSkills" style="display:flex;gap:8px;flex-wrap:wrap;">
             {% for skill in profile_user.profile.skills_list %}
               <span class="rp-skill">{{ skill }}</span>
             {% empty %}
-              <span style="font-size:12px;color:var(--muted)">No skills added yet.</span>
+              <span style="color:var(--muted);">No skills added yet.</span>
             {% endfor %}
           </div>
         </div>
       </aside>
     </div>
 
-    <!-- EDIT PROFILE MODAL — PATCH /api/profile/update/ -->
     <div class="overlay" id="editOverlay">
       <div class="modal">
-        <button class="modal-close" onclick="closeEditModal()">✕</button>
+        <button class="modal-close" onclick="closeEditModal()">X</button>
         <h2>Edit Profile</h2>
-        <p class="sub">Your profile info is saved to the database.</p>
+        <p class="sub">Your profile info is still saved through the same backend API.</p>
         <div class="mfields">
           <div class="mrow">
             <div class="mfield"><label>First Name</label><input type="text" id="editFirst" value="{{ profile_user.first_name }}" /></div>
             <div class="mfield"><label>Last Name</label><input type="text" id="editLast" value="{{ profile_user.last_name }}" /></div>
           </div>
-          <div class="mfield"><label>Bio</label><textarea id="editBio" placeholder="Tell the community about yourself…">{{ profile_user.profile.bio|default:'' }}</textarea></div>
+          <div class="mfield"><label>Bio</label><textarea id="editBio" placeholder="Tell the community about yourself...">{{ profile_user.profile.bio|default:'' }}</textarea></div>
           <div class="mfield"><label>College</label><input type="text" id="editCollege" value="{{ profile_user.profile.college|default:'' }}" placeholder="e.g. SJCIT" /></div>
           <div class="mfield"><label>Location</label><input type="text" id="editLocation" value="{{ profile_user.profile.location|default:'' }}" placeholder="e.g. Bengaluru" /></div>
           <div class="mfield">
             <label>Skills</label>
             <div class="skill-edit-row" id="skillsEditRow"></div>
             <div class="skill-add-row">
-              <input type="text" id="skillInput" placeholder="Add skill (press Enter)" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}" />
+              <input type="text" id="skillInput" placeholder="Add skill" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}" />
               <button onclick="addSkill()">Add</button>
             </div>
           </div>
@@ -343,7 +524,6 @@
         return document.cookie.split(";").map(c => c.trim()).find(c => c.startsWith(name + "="))?.split("=")[1] || "";
       }
 
-      // ── TABS ──
       function switchTab(el, name) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
@@ -351,10 +531,9 @@
         document.getElementById("tab-" + name).classList.add("active");
       }
 
-      // ── LIKE ── PATCH /api/blogs/<id>/like/
       async function toggleLike(btn, id) {
         const countEl = btn.querySelector(".like-count");
-        const iconEl  = btn.querySelector(".act-icon");
+        const iconEl = btn.querySelector(".act-icon");
         try {
           const res = await fetch(`/api/blogs/${id}/like/`, {
             method: "POST",
@@ -363,13 +542,12 @@
           const data = await res.json();
           if (res.ok) {
             btn.classList.toggle("liked", data.liked);
-            iconEl.textContent = data.liked ? "♥" : "♡";
+            iconEl.textContent = data.liked ? "Liked" : "Like";
             countEl.textContent = data.likes_count;
           }
         } catch (e) { console.error(e); }
       }
 
-      // ── FOLLOW ── POST /api/users/<id>/follow/
       async function toggleFollow() {
         const btn = document.getElementById("followBtn");
         const profileId = "{{ profile_user.id }}";
@@ -387,11 +565,8 @@
         } catch (e) { console.error(e); }
       }
 
-      // ── EDIT MODAL ──
       let editSkills = [];
-
       function openEditModal() {
-        // Pre-populate skills from existing chips
         editSkills = Array.from(document.querySelectorAll(".skill-chip")).map(s => s.textContent.trim());
         renderEditSkills();
         document.getElementById("editOverlay").classList.add("open");
@@ -402,9 +577,7 @@
         document.body.style.overflow = "";
       }
       function renderEditSkills() {
-        document.getElementById("skillsEditRow").innerHTML = editSkills
-          .map((s, i) => `<span class="skill-edit-chip">${s}<button class="skill-remove" onclick="removeSkill(${i})">✕</button></span>`)
-          .join("");
+        document.getElementById("skillsEditRow").innerHTML = editSkills.map((s, i) => `<span class="skill-edit-chip">${s}<button class="skill-remove" onclick="removeSkill(${i})">x</button></span>`).join("");
       }
       function addSkill() {
         const inp = document.getElementById("skillInput");
@@ -413,19 +586,17 @@
         inp.value = "";
       }
       function removeSkill(i) { editSkills.splice(i, 1); renderEditSkills(); }
+      document.getElementById("editOverlay").addEventListener("click", function (e) { if (e.target === this) closeEditModal(); });
 
-      document.getElementById("editOverlay").addEventListener("click", function(e) { if (e.target === this) closeEditModal(); });
-
-      // PATCH /api/profile/update/
       async function saveProfile() {
         const msg = document.getElementById("editModalMsg");
         const payload = {
           first_name: document.getElementById("editFirst").value.trim(),
-          last_name:  document.getElementById("editLast").value.trim(),
-          bio:        document.getElementById("editBio").value.trim(),
-          college:    document.getElementById("editCollege").value.trim(),
-          location:   document.getElementById("editLocation").value.trim(),
-          skills:     editSkills,
+          last_name: document.getElementById("editLast").value.trim(),
+          bio: document.getElementById("editBio").value.trim(),
+          college: document.getElementById("editCollege").value.trim(),
+          location: document.getElementById("editLocation").value.trim(),
+          skills: editSkills,
         };
         try {
           const res = await fetch("/api/profile/update/", {
@@ -434,16 +605,21 @@
             body: JSON.stringify(payload),
           });
           if (res.ok) {
-            msg.style.color = "#56d364";
-            msg.textContent = "✓ Profile saved!";
+            msg.style.color = "#4ade80";
+            msg.textContent = "Profile saved.";
             setTimeout(() => location.reload(), 800);
           } else {
             const err = await res.json();
-            msg.style.color = "#f85149";
+            msg.style.color = "#f87171";
             msg.textContent = err.error || "Save failed.";
           }
-        } catch (e) { msg.style.color = "#f85149"; msg.textContent = "Network error."; }
+        } catch (e) {
+          msg.style.color = "#f87171";
+          msg.textContent = "Network error.";
+        }
       }
+
+      function openFollowModal() {}
     </script>
   </body>
 </html>
