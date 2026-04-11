@@ -6,6 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
 from django.http import JsonResponse
 from django.db.models import Count, Prefetch
+from django.conf import settings
+import os
+import requests
+from urllib.parse import urlencode
+import secrets
 
 from .models import BlogPost, BlogComment, Hackathon, Team, TeamMember, TeamInvite
 
@@ -110,6 +115,125 @@ def logout_view(request):
     if request.method == "POST":
         logout(request)
     return redirect("/login/")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  GOOGLE OAUTH VIEWS
+# ══════════════════════════════════════════════════════════════════════════════
+
+def google_login(request):
+    """Redirect user to Google OAuth consent screen."""
+    client_id = settings.GOOGLE_OAUTH_CLIENT_ID
+    redirect_uri = settings.GOOGLE_OAUTH_REDIRECT_URI
+    
+    if not client_id:
+        return redirect("/login/?error=Google+OAuth+not+configured")
+    
+    # Store redirect URL in session
+    next_url = request.GET.get("next", "/")
+    request.session["oauth_next"] = next_url
+    
+    # Generate state for CSRF protection
+    state = secrets.token_urlsafe(32)
+    request.session["oauth_state"] = state
+    
+    params = {
+        "client_id": client_id,
+        "redirect_uri": redirect_uri,
+        "response_type": "code",
+        "scope": "openid email profile",
+        "state": state,
+        "prompt": "consent",
+    }
+    
+    google_auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
+    return redirect(google_auth_url)
+
+
+def google_callback(request):
+    """Handle Google OAuth callback."""
+    code = request.GET.get("code")
+    state = request.GET.get("state")
+    error = request.GET.get("error")
+    
+    # Check for errors from Google
+    if error:
+        return redirect(f"/login/?error=Google+authentication+failed:+{error}")
+    
+    if not code or not state:
+        return redirect("/login/?error=Missing+authorization+code")
+    
+    # Verify state token for CSRF protection
+    session_state = request.session.get("oauth_state")
+    if not session_state or session_state != state:
+        return redirect("/login/?error=Invalid+state+token")
+    
+    try:
+        # Exchange code for tokens
+        token_data = {
+            "client_id": settings.GOOGLE_OAUTH_CLIENT_ID,
+            "client_secret": settings.GOOGLE_OAUTH_CLIENT_SECRET,
+            "code": code,
+            "redirect_uri": settings.GOOGLE_OAUTH_REDIRECT_URI,
+            "grant_type": "authorization_code",
+        }
+        
+        token_response = requests.post(
+            "https://oauth2.googleapis.com/token",
+            data=token_data,
+            timeout=10
+        )
+        token_response.raise_for_status()
+        tokens = token_response.json()
+        
+        # Get user info from Google
+        headers = {"Authorization": f"Bearer {tokens.get('access_token')}"}
+        userinfo_response = requests.get(
+            "https://openidconnect.googleapis.com/v1/userinfo",
+            headers=headers,
+            timeout=10
+        )
+        userinfo_response.raise_for_status()
+        userinfo = userinfo_response.json()
+        
+        # Extract user info
+        email = userinfo.get("email", "")
+        name = userinfo.get("name", "")
+        picture = userinfo.get("picture", "")
+        
+        if not email:
+            return redirect("/login/?error=Could+not+get+email+from+Google")
+        
+        # Try to find or create user
+        user, created = User.objects.get_or_create(
+            email=email,
+            defaults={
+                "username": email.split("@")[0][:30],
+                "first_name": name.split()[0][:30] if name else "",
+                "last_name": " ".join(name.split()[1:])[:30] if name and len(name.split()) > 1 else "",
+            }
+        )
+        
+        # If user exists, update their name if available
+        if not created and name:
+            parts = name.split(maxsplit=1)
+            user.first_name = parts[0][:30]
+            user.last_name = parts[1][:30] if len(parts) > 1 else ""
+            user.save()
+        
+        # Log the user in
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        
+        # Clean up session
+        request.session.pop("oauth_state", None)
+        next_url = request.session.pop("oauth_next", "/")
+        
+        return redirect(next_url)
+        
+    except requests.RequestException as e:
+        return redirect(f"/login/?error=OAuth+failed:+{str(e)[:50]}")
+    except Exception as e:
+        return redirect(f"/login/?error=Unexpected+error:+{str(e)[:50]}")
 
 
 # ══════════════════════════════════════════════════════════════════════════════

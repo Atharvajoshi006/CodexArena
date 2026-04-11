@@ -9,3 +9,6 @@ env/
 media/
 staticfiles/
 .vercel/
+*.log
+.DS_Store
+node_modules/

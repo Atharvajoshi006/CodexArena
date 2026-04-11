@@ -7,6 +7,10 @@ urlpatterns = [
     path("login/",   views.login_view,   name="login"),
     path("signup/",  views.signup_view,  name="signup"),
     path("logout/",  views.logout_view,  name="logout"),
+    
+    # ── GOOGLE OAUTH ──────────────────────────────────────────────────────────
+    path("google/login/",      views.google_login,      name="google_login"),
+    path("google/callback/",   views.google_callback,   name="google_callback"),
 
     # ── PAGES ─────────────────────────────────────────────────────────────────
     path("",                        views.index_view,      name="index"),
