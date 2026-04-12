@@ -9,7 +9,7 @@ from django.db.models import Count, Prefetch
 from django.conf import settings
 import os
 import requests
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote_plus
 import secrets
 
 from .models import BlogPost, BlogComment, Hackathon, Team, TeamMember, TeamInvite
@@ -125,115 +125,132 @@ def google_login(request):
     """Redirect user to Google OAuth consent screen."""
     client_id = settings.GOOGLE_OAUTH_CLIENT_ID
     redirect_uri = settings.GOOGLE_OAUTH_REDIRECT_URI
-    
-    if not client_id:
-        return redirect("/login/?error=Google+OAuth+not+configured")
-    
+
+    if not client_id or not settings.GOOGLE_OAUTH_CLIENT_SECRET:
+        return redirect("/login/?error=" + quote_plus("Google OAuth is not configured on this server."))
+
     # Store redirect URL in session
     next_url = request.GET.get("next", "/")
     request.session["oauth_next"] = next_url
-    
-    # Generate state for CSRF protection
+
+    # Generate state token for CSRF protection
     state = secrets.token_urlsafe(32)
     request.session["oauth_state"] = state
-    
+
     params = {
         "client_id": client_id,
         "redirect_uri": redirect_uri,
         "response_type": "code",
         "scope": "openid email profile",
         "state": state,
-        "prompt": "consent",
+        "access_type": "online",
     }
-    
-    google_auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
+
+    google_auth_url = "https://accounts.google.com/o/oauth2/v2/auth?" + urlencode(params)
     return redirect(google_auth_url)
+
+
+def _make_unique_username(base):
+    """
+    Return *base* if available; otherwise append a short random suffix until unique.
+    Keeps the result within Django's 150-char username limit.
+    """
+    base = base[:30]  # leave room for the suffix
+    candidate = base
+    while User.objects.filter(username=candidate).exists():
+        suffix = secrets.token_hex(3)  # 6 hex chars
+        candidate = f"{base[:23]}_{suffix}"  # max 30 chars
+    return candidate
 
 
 def google_callback(request):
     """Handle Google OAuth callback."""
     code = request.GET.get("code")
     state = request.GET.get("state")
-    error = request.GET.get("error")
-    
-    # Check for errors from Google
-    if error:
-        return redirect(f"/login/?error=Google+authentication+failed:+{error}")
-    
+    google_error = request.GET.get("error")
+
+    # Error returned by Google (e.g. user cancelled)
+    if google_error:
+        return redirect("/login/?error=" + quote_plus(f"Google sign-in was cancelled or failed: {google_error}"))
+
     if not code or not state:
-        return redirect("/login/?error=Missing+authorization+code")
-    
-    # Verify state token for CSRF protection
+        return redirect("/login/?error=" + quote_plus("Missing authorization code or state."))
+
+    # Verify state token to prevent CSRF
     session_state = request.session.get("oauth_state")
     if not session_state or session_state != state:
-        return redirect("/login/?error=Invalid+state+token")
-    
+        return redirect("/login/?error=" + quote_plus("Invalid state token. Please try signing in again."))
+
     try:
-        # Exchange code for tokens
-        token_data = {
-            "client_id": settings.GOOGLE_OAUTH_CLIENT_ID,
-            "client_secret": settings.GOOGLE_OAUTH_CLIENT_SECRET,
-            "code": code,
-            "redirect_uri": settings.GOOGLE_OAUTH_REDIRECT_URI,
-            "grant_type": "authorization_code",
-        }
-        
+        # ── 1. Exchange authorisation code for tokens ──────────────────────────
         token_response = requests.post(
             "https://oauth2.googleapis.com/token",
-            data=token_data,
-            timeout=10
+            data={
+                "client_id": settings.GOOGLE_OAUTH_CLIENT_ID,
+                "client_secret": settings.GOOGLE_OAUTH_CLIENT_SECRET,
+                "code": code,
+                "redirect_uri": settings.GOOGLE_OAUTH_REDIRECT_URI,
+                "grant_type": "authorization_code",
+            },
+            timeout=10,
         )
         token_response.raise_for_status()
         tokens = token_response.json()
-        
-        # Get user info from Google
-        headers = {"Authorization": f"Bearer {tokens.get('access_token')}"}
+
+        access_token = tokens.get("access_token")
+        if not access_token:
+            token_error = tokens.get("error_description") or tokens.get("error") or "No access token returned"
+            return redirect("/login/?error=" + quote_plus(f"Token exchange failed: {token_error}"))
+
+        # ── 2. Fetch user info from Google ─────────────────────────────────────
         userinfo_response = requests.get(
             "https://openidconnect.googleapis.com/v1/userinfo",
-            headers=headers,
-            timeout=10
+            headers={"Authorization": f"Bearer {access_token}"},
+            timeout=10,
         )
         userinfo_response.raise_for_status()
         userinfo = userinfo_response.json()
-        
-        # Extract user info
-        email = userinfo.get("email", "")
-        name = userinfo.get("name", "")
-        picture = userinfo.get("picture", "")
-        
+
+        email = userinfo.get("email", "").strip().lower()
+        name = userinfo.get("name", "").strip()
+
         if not email:
-            return redirect("/login/?error=Could+not+get+email+from+Google")
-        
-        # Try to find or create user
-        user, created = User.objects.get_or_create(
-            email=email,
-            defaults={
-                "username": email.split("@")[0][:30],
-                "first_name": name.split()[0][:30] if name else "",
-                "last_name": " ".join(name.split()[1:])[:30] if name and len(name.split()) > 1 else "",
-            }
-        )
-        
-        # If user exists, update their name if available
-        if not created and name:
-            parts = name.split(maxsplit=1)
-            user.first_name = parts[0][:30]
-            user.last_name = parts[1][:30] if len(parts) > 1 else ""
-            user.save()
-        
-        # Log the user in
+            return redirect("/login/?error=" + quote_plus("Could not retrieve your email from Google."))
+
+        # ── 3. Find or create local Django user ────────────────────────────────
+        try:
+            user = User.objects.get(email=email)
+            # Update name on returning users
+            if name:
+                parts = name.split(maxsplit=1)
+                user.first_name = parts[0][:30]
+                user.last_name = parts[1][:30] if len(parts) > 1 else ""
+                user.save(update_fields=["first_name", "last_name"])
+        except User.DoesNotExist:
+            # Derive a unique username from the email local-part
+            base = email.split("@")[0]
+            username = _make_unique_username(base)
+            parts = name.split(maxsplit=1) if name else []
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=None,  # unusable password — OAuth only
+                first_name=parts[0][:30] if parts else "",
+                last_name=parts[1][:30] if len(parts) > 1 else "",
+            )
+
+        # ── 4. Log the user in ─────────────────────────────────────────────────
         login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-        
-        # Clean up session
+
+        # Clean up session state
         request.session.pop("oauth_state", None)
         next_url = request.session.pop("oauth_next", "/")
-        
         return redirect(next_url)
-        
-    except requests.RequestException as e:
-        return redirect(f"/login/?error=OAuth+failed:+{str(e)[:50]}")
-    except Exception as e:
-        return redirect(f"/login/?error=Unexpected+error:+{str(e)[:50]}")
+
+    except requests.RequestException as exc:
+        return redirect("/login/?error=" + quote_plus(f"Network error during sign-in: {str(exc)[:80]}"))
+    except Exception as exc:
+        return redirect("/login/?error=" + quote_plus(f"Unexpected error: {str(exc)[:80]}"))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
