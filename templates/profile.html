@@ -486,6 +486,26 @@
             {% endfor %}
           </div>
         </div>
+        {% if user_teams %}
+        <div class="rp-block">
+          <h3>Teams</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            {% for team in user_teams %}
+              <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--line);cursor:pointer;" onclick="window.location.href='/teams/{{ team.id }}/'">
+                <div style="font-weight:700;font-size:0.95rem;color:var(--text);">{{ team.name }}</div>
+                <div style="font-size:0.82rem;color:var(--muted);margin-top:6px;">{{ team.get_category_display }} • {{ team.members_count }} members</div>
+                <div style="font-size:0.75rem;color:var(--accent);margin-top:6px;">
+                  {% if team.leader == profile_user %}
+                    <span style="background:rgba(88,166,255,0.12);padding:3px 8px;border-radius:6px;">Leader</span>
+                  {% else %}
+                    <span style="background:rgba(74,222,128,0.12);padding:3px 8px;border-radius:6px;">Member</span>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
       </aside>
     </div>
 
@@ -559,8 +579,12 @@
           const data = await res.json();
           if (res.ok) {
             btn.textContent = data.following ? "Following" : "Follow";
-            const fc = document.getElementById("statFollowers");
-            if (fc) fc.textContent = data.followers_count;
+            // Update followers count on the profile being viewed
+            const statFollowers = document.getElementById("statFollowers");
+            if (statFollowers) statFollowers.textContent = data.followers_count;
+            // Update following count if viewing own profile (in right panel)
+            const rpFollowing = document.getElementById("rpFollowing");
+            if (rpFollowing) rpFollowing.textContent = data.following_count;
           }
         } catch (e) { console.error(e); }
       }

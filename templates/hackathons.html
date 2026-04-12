@@ -442,6 +442,19 @@
             <li>Like events you want to revisit later.</li>
             <li>Share a hackathon through the same API you already had.</li>
           </ul>
+          {% if user_teams %}
+          <div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--line);">
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;margin-bottom:12px;">Your Teams</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              {% for team in user_teams %}
+                <div style="padding:10px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--line);cursor:pointer;transition:0.2s ease;" onclick="window.location.href='/teams/{{ team.id }}/'" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                  <div style="font-weight:700;font-size:0.92rem;color:var(--text);">{{ team.name }}</div>
+                  <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">{{ team.get_category_display }} • {{ team.members_count }}/{{ team.members_needed }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
         </aside>
       </section>
 

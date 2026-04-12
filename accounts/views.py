@@ -268,11 +268,16 @@ def index_view(request):
     hackathon_count = Hackathon.objects.filter(is_approved=True).count()
     user_count      = User.objects.count()
 
+    user_teams = []
+    if request.user.is_authenticated:
+        user_teams = list(request.user.teams_led.all()) + list(request.user.teams_in.all())
+
     ctx = {
         "featured_hackathons": featured_hackathons,
         "recent_blogs":        recent_blogs,
         "hackathon_count":     hackathon_count,
         "user_count":          user_count,
+        "user_teams":          user_teams,
     }
     return render(request, "index.html", ctx)
 
@@ -283,14 +288,17 @@ def hackathons_view(request):
 
     # Pass IDs the current user has liked (for button state)
     user_liked_ids = set()
+    user_teams = []
     if request.user.is_authenticated:
         user_liked_ids = set(
             request.user.liked_hackathons.values_list("id", flat=True)
         )
+        user_teams = list(request.user.teams_led.all()) + list(request.user.teams_in.all())
 
     ctx = {
         "hackathons":     hackathons,
         "user_liked_ids": user_liked_ids,
+        "user_teams":     user_teams,
     }
     return render(request, "hackathons.html", ctx)
 
@@ -331,6 +339,7 @@ def blogs_view(request):
 
     user_liked_post_ids = set()
     user_following_ids  = set()
+    user_teams = []
     if request.user.is_authenticated:
         user_liked_post_ids = set(
             request.user.liked_posts.values_list("id", flat=True)
@@ -339,6 +348,7 @@ def blogs_view(request):
             user_following_ids = set(
                 request.user.profile.following.values_list("user__id", flat=True)
             )
+        user_teams = list(request.user.teams_led.all()) + list(request.user.teams_in.all())
 
     ctx = {
         "posts":               posts,
@@ -351,6 +361,7 @@ def blogs_view(request):
         "suggested_users":     suggested_users,
         "user_liked_post_ids": user_liked_post_ids,
         "user_following_ids":  user_following_ids,
+        "user_teams":          user_teams,
     }
     return render(request, "blogs.html", ctx)
 
@@ -367,6 +378,11 @@ def profile_view(request, username=None):
     else:
         profile_user = request.user
 
+    # Ensure profile exists
+    if not hasattr(profile_user, "profile"):
+        from .models import Profile
+        Profile.objects.get_or_create(user=profile_user)
+
     user_posts = BlogPost.objects.filter(author=profile_user).order_by("-created_at")
     liked_posts = BlogPost.objects.filter(likes=profile_user).order_by("-created_at")
     user_shared_hackathons = Hackathon.objects.filter(
@@ -376,22 +392,24 @@ def profile_view(request, username=None):
     post_count   = user_posts.count()
     total_likes  = sum(p.likes_count for p in user_posts)
 
-    followers_count = 0
-    following_count = 0
+    followers_count = profile_user.profile.followers_count
+    following_count = profile_user.profile.following_count
     is_following    = False
-    if hasattr(profile_user, "profile"):
-        followers_count = profile_user.profile.followers_count
-        following_count = profile_user.profile.following_count
-        if request.user.is_authenticated and hasattr(request.user, "profile"):
-            is_following = request.user.profile.following.filter(
-                user=profile_user
-            ).exists()
+    if request.user.is_authenticated and hasattr(request.user, "profile"):
+        is_following = request.user.profile.following.filter(
+            user=profile_user
+        ).exists()
 
     user_liked_post_ids = set()
     if request.user.is_authenticated:
         user_liked_post_ids = set(
             request.user.liked_posts.values_list("id", flat=True)
         )
+
+    # Get user's teams
+    user_teams = []
+    if request.user.is_authenticated:
+        user_teams = list(request.user.teams_led.all()) + list(request.user.teams_in.all())
 
     ctx = {
         "profile_user":          profile_user,
@@ -404,6 +422,7 @@ def profile_view(request, username=None):
         "following_count":       following_count,
         "is_following":          is_following,
         "user_liked_post_ids":   user_liked_post_ids,
+        "user_teams":            user_teams,
     }
     return render(request, "profile.html", ctx)
 
@@ -560,8 +579,10 @@ def api_user_follow(request, user_id):
     if target_user == request.user:
         return JsonResponse({"error": "You cannot follow yourself."}, status=400)
 
-    my_profile     = request.user.profile
-    target_profile = target_user.profile
+    # Ensure profiles exist
+    from .models import Profile
+    my_profile, _ = Profile.objects.get_or_create(user=request.user)
+    target_profile, _ = Profile.objects.get_or_create(user=target_user)
 
     if my_profile.following.filter(user=target_user).exists():
         my_profile.following.remove(target_profile)
@@ -573,6 +594,8 @@ def api_user_follow(request, user_id):
     return JsonResponse({
         "following":        following,
         "followers_count":  target_profile.followers_count,
+        "following_count":  my_profile.following_count,
+        "is_following":     following,
     })
 
 
