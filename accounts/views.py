@@ -694,9 +694,11 @@ def team_recruit_view(request):
 def team_detail_view(request, team_id):
     """View a specific team's details."""
     team = get_object_or_404(Team, id=team_id)
-    members = team.members.all()
+    # Get TeamMember records (not just User objects) to access role information
+    members = team.member_records.select_related("user", "user__profile").order_by("joined_at")
+    user_ids = team.members.values_list("id", flat=True)
     is_leader = request.user == team.leader
-    is_member = request.user in members
+    is_member = request.user.id in user_ids
     has_pending_invite = TeamInvite.objects.filter(team=team, user=request.user, status="pending").exists()
 
     ctx = {
