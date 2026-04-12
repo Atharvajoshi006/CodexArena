@@ -139,15 +139,20 @@ TEMPLATES = [
 
 
 # ─── DATABASE ────────────────────────────────────────────────────────────────
-# SQLite is fine for development. Switch to PostgreSQL for production.
+# Development: SQLite (default when DATABASE_URL is not set)
+# Production:  Supabase PostgreSQL via DATABASE_URL env var
+#
+# In Render dashboard, set DATABASE_URL to your Supabase Transaction Pooler URL:
+#   postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?sslmode=require
 if os.getenv("DATABASE_URL"):
     if dj_database_url is None:
         raise RuntimeError("Install dj-database-url before using DATABASE_URL.")
     DATABASES = {
         "default": dj_database_url.parse(
             os.environ["DATABASE_URL"],
-            conn_max_age=600,
-            conn_health_checks=True,
+            conn_max_age=0,          # 0 = no persistent connections (required for Supabase transaction pooler)
+            conn_health_checks=False,
+            ssl_require=True,        # Supabase requires SSL
         )
     }
 else:
@@ -157,18 +162,6 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
-# ── Production PostgreSQL (uncomment & fill in when deploying) ────────────────
-# DATABASES = {
-#     "default": {
-#         "ENGINE":   "django.db.backends.postgresql",
-#         "NAME":     "codexarena_db",
-#         "USER":     "your_db_user",
-#         "PASSWORD": "your_db_password",
-#         "HOST":     "localhost",
-#         "PORT":     "5432",
-#     }
-# }
 
 
 # ─── AUTH ────────────────────────────────────────────────────────────────────
