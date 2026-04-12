@@ -41,6 +41,7 @@ urlpatterns = [
     # ── API — TEAMS ───────────────────────────────────────────────────────────
     path("api/teams/create/",                           views.api_team_create,          name="api_team_create"),
     path("api/teams/<int:team_id>/invite/",             views.api_team_invite,          name="api_team_invite"),
+    path("api/teams/<int:team_id>/apply/",              views.api_team_apply,           name="api_team_apply"),
     path("api/teams/<int:team_id>/remove-member/",      views.api_team_remove_member,   name="api_team_remove_member"),
     path("api/teams/<int:team_id>/update-status/",      views.api_team_update_status,   name="api_team_update_status"),
     path("api/teams/invites/<int:invite_id>/respond/",  views.api_team_invite_respond,  name="api_team_invite_respond"),

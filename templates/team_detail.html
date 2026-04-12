@@ -307,7 +307,7 @@
           </div>
         </div>
         {% if user.is_authenticated and user != team.leader and user not in team.members.all %}
-        <button class="btn btn-primary">✓ Interested</button>
+        <button class="btn btn-primary" onclick="applyForTeam()">✓ Interested</button>
         {% endif %}
       </div>
     </div>
@@ -355,5 +355,47 @@
     <p>© 2026 CodexArena. Building the future, together.</p>
   </footer>
 </div>
+
+<script>
+  function getCookie(name) {
+    return document.cookie
+      .split(";")
+      .map(c => c.trim())
+      .find(c => c.startsWith(name + "="))
+      ?.split("=")[1] || "";
+  }
+
+  async function applyForTeam() {
+    const teamId = {{ team.id }};
+    try {
+      const res = await fetch(`/api/teams/${teamId}/apply/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({
+          message: "I'm interested in joining!",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("✓ Your application has been sent to the team leader!");
+        // Disable the button
+        document.querySelector("button[onclick='applyForTeam()']").disabled = true;
+        document.querySelector("button[onclick='applyForTeam()']").textContent = "✓ Application Sent";
+        document.querySelector("button[onclick='applyForTeam()']").style.opacity = "0.6";
+        document.querySelector("button[onclick='applyForTeam()']").style.cursor = "not-allowed";
+      } else {
+        alert("✗ " + (data.error || "Failed to apply for team."));
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Network error. Please try again.");
+    }
+  }
+</script>
 </body>
 </html>

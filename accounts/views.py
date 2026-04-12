@@ -883,3 +883,47 @@ def api_team_update_status(request, team_id):
         "status":  team.status,
         "message": f"Team status updated to '{status}'.",
     })
+
+
+@login_required(login_url="/login/")
+@require_POST
+def api_team_apply(request, team_id):
+    """POST /api/teams/<team_id>/apply/ — User applies/requests to join a team."""
+    team = get_object_or_404(Team, id=team_id)
+    data = _json_body(request)
+
+    # Can't apply to own team
+    if request.user == team.leader:
+        return JsonResponse({"error": "You are the team leader."}, status=400)
+
+    # Can't apply if already a member
+    if request.user in team.members.all():
+        return JsonResponse({"error": "You are already a member of this team."}, status=400)
+
+    # Check if already applied
+    existing_invite = TeamInvite.objects.filter(team=team, user=request.user).first()
+    if existing_invite:
+        if existing_invite.status == "pending":
+            return JsonResponse({"error": "You have already applied to this team."}, status=400)
+        elif existing_invite.status == "declined":
+            # Allow re-applying if previously declined
+            existing_invite.delete()
+        elif existing_invite.status == "accepted":
+            return JsonResponse({"error": "You are already a member of this team."}, status=400)
+
+    message = data.get("message", "I'm interested in joining!").strip()
+
+    # Create invite record
+    invite = TeamInvite.objects.create(
+        team=team,
+        user=request.user,
+        message=message,
+        status="pending"
+    )
+
+    return JsonResponse({
+        "success": True,
+        "invite_id": invite.id,
+        "status": "pending",
+        "message": "Your application has been sent to the team leader.",
+    }, status=201)
