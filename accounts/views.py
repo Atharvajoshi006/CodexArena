@@ -718,7 +718,7 @@ def notifications_view(request):
     pending_applications = TeamInvite.objects.filter(
         team__leader=request.user, 
         status="pending"
-    ).select_related("user", "user__profile", "team").order_by("-created_at")
+    ).select_related("user", "team").order_by("-created_at")
 
     # Invites sent directly to the user (if any exist in this flow)
     pending_invites = TeamInvite.objects.filter(
