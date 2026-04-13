@@ -100,7 +100,7 @@
       }
       h1 {
         font-family: "Space Grotesk", sans-serif;
-        font-size: clamp(3rem, 5vw, 5.4rem);
+        font-size: clamp(2rem, 6vw, 4.8rem);
         line-height: 0.95;
         letter-spacing: -0.06em;
       }
@@ -182,6 +182,7 @@
         gap: 10px;
         width: 100%;
         padding: 14px 16px;
+        min-height: 48px;
         border-radius: 16px;
         border: 1px solid var(--line);
         background: rgba(255,255,255,0.03);
@@ -216,6 +217,7 @@
       input[type="text"], input[type="email"], input[type="password"] {
         width: 100%;
         padding: 15px 46px 15px 16px;
+        min-height: 48px;
         border-radius: 16px;
         border: 1px solid var(--line);
         background: rgba(255,255,255,0.03);
@@ -223,6 +225,7 @@
         outline: none;
         font: inherit;
         transition: 0.2s ease;
+        font-size: 16px;
       }
       input::placeholder { color: #7587a4; }
       input:focus { border-color: var(--line-strong); background: rgba(255,255,255,0.05); }
@@ -253,6 +256,7 @@
         margin-top: 8px;
         width: 100%;
         padding: 15px 18px;
+        min-height: 48px;
         border-radius: 16px;
         border: none;
         background: linear-gradient(135deg, var(--accent), var(--accent-strong));
@@ -262,6 +266,9 @@
         cursor: pointer;
         box-shadow: 0 16px 32px rgba(47,129,247,0.28);
         transition: 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .submit:hover { transform: translateY(-1px); }
       .submit:disabled { opacity: 0.65; transform: none; cursor: not-allowed; }
@@ -278,11 +285,68 @@
         .shell { grid-template-columns: 1fr; }
         .showcase { border-right: none; border-bottom: 1px solid var(--line); }
       }
-      @media (max-width: 720px) {
-        .showcase { padding: 24px 20px; }
+      @media (max-width: 1024px) {
+        .shell { padding: 16px; }
+        .showcase { padding: 28px; }
+        .auth-pane { padding: 28px; }
+        .card { padding: 24px; }
+      }
+      @media (max-width: 768px) {
+        .shell { padding: 12px; }
+        .showcase { padding: 20px; }
         .auth-pane { padding: 20px; }
-        .card { padding: 22px; }
+        .card { padding: 20px; border-radius: 20px; }
+        .card h2 { font-size: 1.6rem; }
+        .card p { font-size: 0.9rem; }
+        .intro { gap: 16px; }
+        h1 { font-size: clamp(1.6rem, 6vw, 3rem); }
+        .intro p { font-size: 0.95rem; }
+        .showcase-grid { grid-template-columns: 1fr; gap: 12px; }
+        .metric, .terminal { border-radius: 18px; }
+        .metric { padding: 14px; }
+        .metric strong { font-size: 1.3rem; }
+        .metric span { font-size: 0.75rem; }
+        .field { gap: 6px; }
+        label { font-size: 0.7rem; }
+        input[type="text"], input[type="email"], input[type="password"] { padding: 12px 40px 12px 14px; font-size: 16px; }
+        .oauth { padding: 12px 14px; font-size: 0.95rem; min-height: 44px; }
+        .submit { padding: 12px 16px; font-size: 0.95rem; min-height: 44px; }
+        .fire-error, .fire-success { font-size: 0.85rem; }
+        .foot { font-size: 0.9rem; margin-top: 18px; }
+      }
+      @media (max-width: 620px) {
+        .shell { padding: 10px; }
+        .showcase { padding: 16px; }
+        .auth-pane { padding: 16px; }
+        .card { padding: 16px; border-radius: 18px; }
+        .card h2 { font-size: 1.4rem; }
+        h1 { font-size: clamp(1.4rem, 7vw, 2.4rem); margin-top: 16px; }
+        .eyebrow { font-size: 0.65rem; padding: 6px 10px; }
+        .intro p { font-size: 0.9rem; }
+        .showcase-grid { gap: 10px; }
+        .metric { padding: 12px; }
+        .terminal-bar { padding: 10px 14px; }
+        pre { padding: 12px; font-size: 0.8rem; }
+        .form-grid { gap: 14px; }
+        input[type="text"], input[type="email"], input[type="password"] { padding: 10px 36px 10px 12px; }
+        .meta-row { gap: 8px; }
+        .submit { padding: 10px 14px; font-size: 0.9rem; }
+      }
+      @media (max-width: 480px) {
+        .shell { padding: 8px; }
+        .showcase { padding: 14px; }
+        .auth-pane { padding: 14px; }
+        .card { padding: 14px; }
+        .card h2 { font-size: 1.2rem; }
+        .brand-mark { width: 36px; height: 36px; }
+        .brand-copy strong { font-size: 0.9rem; }
+        h1 { font-size: clamp(1.2rem, 8vw, 2rem); }
+        .intro { gap: 12px; }
         .showcase-grid { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 375px) {
+        .shell { padding: 6px; }
+        h1 { font-size: clamp(1.1rem, 9vw, 1.8rem); }
       }
     </style>
   </head>

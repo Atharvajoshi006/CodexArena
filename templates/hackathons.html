@@ -79,6 +79,7 @@
       nav { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
       nav a, nav button {
         padding: 10px 16px;
+        min-height: 44px;
         border-radius: 999px;
         color: var(--muted);
         text-decoration: none;
@@ -88,6 +89,9 @@
         font-weight: 700;
         cursor: pointer;
         transition: 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       nav a:hover, nav button:hover, nav a.active {
         color: var(--text);
@@ -130,7 +134,7 @@
       h1 {
         margin-top: 18px;
         font-family: "Space Grotesk", sans-serif;
-        font-size: clamp(3rem, 5vw, 5rem);
+        font-size: clamp(2rem, 6vw, 4.5rem);
         line-height: 0.95;
         letter-spacing: -0.06em;
       }
@@ -184,6 +188,7 @@
       .search-wrap input { padding-left: 16px; }
       .post-btn {
         padding: 14px 18px;
+        min-height: 48px;
         border-radius: 16px;
         border: none;
         background: linear-gradient(135deg, var(--accent), var(--accent-strong));
@@ -193,6 +198,9 @@
         cursor: pointer;
         text-decoration: none;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .section-head {
         display: flex;
@@ -279,7 +287,7 @@
         font-family: "Space Grotesk", sans-serif; font-weight: 700;
       }
       .org-name { font-weight: 800; }
-      .card-title { font-family: "Space Grotesk", sans-serif; font-size: 1.35rem; line-height: 1.18; }
+      .card-title { font-family: "Space Grotesk", sans-serif; font-size: clamp(1rem, 4vw, 1.35rem); line-height: 1.18; }
       .card-desc { color: var(--muted); line-height: 1.85; flex: 1; }
       .card-tags { display: flex; gap: 8px; flex-wrap: wrap; }
       .ctag { color: var(--accent); background: rgba(88,166,255,0.08); border-color: rgba(88,166,255,0.16); }
@@ -287,6 +295,8 @@
       .like-btn {
         display: inline-flex; align-items: center; gap: 8px;
         padding: 10px 14px;
+        min-height: 44px;
+        min-width: 44px;
         border-radius: 14px;
         border: 1px solid var(--line);
         background: rgba(255,255,255,0.03);
@@ -305,6 +315,7 @@
         align-items: center;
         justify-content: center;
         padding: 13px 16px;
+        min-height: 48px;
         border-radius: 16px;
         text-decoration: none;
         color: var(--text);
@@ -387,12 +398,100 @@
         .hero { grid-template-columns: 1fr; }
         .filter-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       }
-      @media (max-width: 720px) {
+      @media (max-width: 1024px) {
+        .page { padding: 16px; }
+        .hero-main, .hero-side { padding: 24px; }
+        .filter-bar { gap: 12px; padding: 18px; }
+        .card-grid { gap: 16px; }
+        .hack-card { padding: 18px; gap: 12px; }
+      }
+      @media (max-width: 768px) {
         .page { padding: 12px; }
-        header { flex-direction: column; align-items: stretch; }
-        .filter-bar, .mrow { grid-template-columns: 1fr; }
-        .hero-stats { grid-template-columns: 1fr; }
-        iframe.embed-frame { height: 520px; }
+        header { gap: 12px; padding: 14px 16px; flex-direction: column; border-radius: 20px; }
+        nav { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .brand { width: 100%; }
+        .filter-bar { grid-template-columns: 1fr; padding: 16px; border-radius: 20px; }
+        .filter-group { gap: 6px; }
+        .filter-group label { font-size: 0.7rem; }
+        select, input[type="text"] { padding: 12px 14px; font-size: 14px; }
+        .post-btn { padding: 12px 16px; font-size: 0.9rem; }
+        .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .hero-stat { padding: 14px; }
+        .hero-stat strong { font-size: 1.2rem; }
+        .hero-stat span { font-size: 0.75rem; }
+        .card-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+        .hack-card { padding: 16px; }
+        .card-title { font-size: clamp(0.95rem, 3.5vw, 1.2rem); }
+        .card-desc { font-size: 0.9rem; line-height: 1.6; }
+        .ctag { font-size: 0.7rem; padding: 6px 10px; }
+        .card-tags { gap: 6px; }
+        .card-top, .org-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .like-btn { font-size: 0.85rem; padding: 8px 12px; }
+        .embed-frame { height: 400px; }
+        .embed-toolbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .embed-url-row { font-size: 0.85rem; }
+        .open-btn { padding: 8px 12px; font-size: 0.85rem; }
+        .hero-main, .hero-side { border-radius: 20px; padding: 18px; }
+        h1 { font-size: clamp(1.6rem, 6vw, 3rem); margin-top: 14px; }
+        .hero-tag { font-size: 0.65rem; padding: 6px 10px; }
+        .hero-main p, .hero-side p { font-size: 0.9rem; margin-top: 12px; }
+        .hero-side ul { margin-top: 12px; padding-left: 16px; font-size: 0.9rem; }
+        .hero-side h2 { font-size: 1.2rem; }
+        .hero-side h3 { font-size: 1rem; }
+        .mfields { gap: 12px; }
+        .mrow { gap: 10px; }
+        .modal { max-width: 90%; border-radius: 20px; padding: 18px; }
+        .modal h2 { font-size: 1.4rem; }
+        .modal-close { width: 36px; height: 36px; }
+        .btn-submit, .btn-cancel { padding: 12px 14px; font-size: 0.9rem; min-height: 44px; }
+      }
+      @media (max-width: 620px) {
+        .page { padding: 10px; }
+        header { padding: 12px 14px; border-radius: 18px; }
+        nav { gap: 8px; }
+        nav a, nav button { padding: 10px 12px; font-size: 0.85rem; min-height: 40px; }
+        .filter-bar { padding: 12px; border-radius: 18px; }
+        select, input[type="text"] { padding: 10px 12px; font-size: 13px; }
+        .post-btn { padding: 10px 14px; font-size: 0.85rem; min-height: 40px; }
+        .card-grid { grid-template-columns: 1fr; gap: 12px; }
+        .hack-card { padding: 14px; }
+        .card-title { font-size: clamp(0.9rem, 5vw, 1rem); }
+        .card-desc { font-size: 0.85rem; }
+        .like-btn { font-size: 0.8rem; padding: 8px 10px; }
+        .btn-register { padding: 12px 14px; font-size: 0.85rem; }
+        .org-av { width: 36px; height: 36px; font-size: 0.8rem; }
+        .hack-status, .hack-loc { font-size: 0.7rem; padding: 6px 10px; }
+        h1 { font-size: clamp(1.4rem, 7vw, 2.2rem); }
+        .hero-stats { grid-template-columns: 1fr; gap: 8px; }
+        .hero-main { border-radius: 18px; padding: 14px; }
+        .hero-side { border-radius: 18px; padding: 14px; margin-top: 12px; }
+        .embed-frame { height: 320px; }
+        .curated-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .section-head { gap: 10px; margin: 16px 0 12px; }
+        .section-head h2 { font-size: 1.2rem; }
+        .modal { max-width: 95%; padding: 16px; border-radius: 16px; }
+        .modal h2 { font-size: 1.2rem; }
+      }
+      @media (max-width: 480px) {
+        .page { padding: 8px; }
+        header { padding: 10px 12px; }
+        nav { grid-template-columns: 1fr; }
+        .filter-bar { padding: 10px; }
+        select, input[type="text"] { padding: 10px; font-size: 14px; }
+        .hero-stats { gap: 6px; }
+        .card-grid { gap: 10px; }
+        .hack-card { padding: 12px; gap: 10px; }
+        .card-title { font-size: clamp(0.85rem, 6vw, 1rem); }
+        .section-head { margin: 12px 0 10px; }
+        .embed-frame { height: 280px; }
+      }
+      @media (max-width: 375px) {
+        .page { padding: 6px; }
+        header { padding: 8px; border-radius: 16px; }
+        nav { gap: 6px; }
+        nav a, nav button { padding: 8px 10px; font-size: 0.8rem; }
+        h1 { font-size: clamp(1.2rem, 8vw, 1.8rem); }
+        .hero-stat strong { font-size: 1.1rem; }
       }
     </style>
   </head>

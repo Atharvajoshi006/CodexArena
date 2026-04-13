@@ -166,7 +166,7 @@
       .avatar:hover .avatar-overlay { opacity: 1; }
       .profile-copy h1 {
         font-family: "Space Grotesk", sans-serif;
-        font-size: clamp(2rem, 4vw, 3rem);
+        font-size: clamp(1.6rem, 5vw, 3rem);
         line-height: 0.95;
         letter-spacing: -0.05em;
       }
@@ -207,6 +207,7 @@
       }
       .tab {
         padding: 14px 16px;
+        min-height: 44px;
         border-radius: 16px;
         border: 1px solid var(--line);
         background: rgba(255,255,255,0.03);
@@ -214,6 +215,9 @@
         text-align: center;
         cursor: pointer;
         font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .tab.active { color: var(--text); border-color: var(--line-strong); background: rgba(255,255,255,0.06); }
       .tab-content { display: none; }
@@ -312,17 +316,96 @@
         .shell { grid-template-columns: 240px minmax(0, 1fr); }
         .rp { display: none; }
       }
+      @media (max-width: 1024px) {
+        .shell { padding: 16px; gap: 16px; }
+        .main { gap: 14px; }
+        .topbar { padding: 14px 16px; gap: 12px; }
+        .profile-card { padding: 20px; }
+        .stat-row { gap: 10px; }
+        .stat-item { padding: 14px; }
+        .tabs { gap: 8px; }
+      }
       @media (max-width: 820px) {
         .shell { grid-template-columns: 1fr; }
-        .sidebar, .rp { position: static; height: auto; }
+        .sidebar { position: static; height: auto; border-radius: 24px; padding: 16px; }
+        .rp { position: static; height: auto; border-radius: 24px; padding: 16px; display: flex; gap: 16px; flex-direction: column; }
+      }
+      @media (max-width: 768px) {
+        .shell { padding: 12px; gap: 12px; }
+        .main { gap: 12px; }
+        .topbar { padding: 12px 14px; border-radius: 20px; }
+        .topbar-info h2 { font-size: 1.1rem; }
+        .topbar-info span { font-size: 0.8rem; }
+        .banner { min-height: 160px; border-radius: 20px; }
+        .banner-edit { padding: 8px 12px; top: 12px; right: 12px; border-radius: 12px; font-size: 0.85rem; }
+        .profile-card { border-radius: 20px; padding: 16px; margin-top: -60px; }
+        .avatar { width: 96px; height: 96px; border-radius: 24px; font-size: 1.8rem; }
+        .profile-copy h1 { font-size: clamp(1.4rem, 5vw, 2.4rem); }
+        .p-handle { font-size: 0.9rem; }
+        .p-bio { font-size: 0.9rem; margin-top: 10px; }
+        .p-meta-row { gap: 12px; margin-top: 12px; font-size: 0.85rem; }
+        .skills-row { gap: 6px; margin-top: 12px; }
+        .skill-chip { font-size: 0.75rem; padding: 6px 10px; }
+        .stat-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .stat-item { padding: 12px; border-radius: 16px; }
+        .stat-n { font-size: 1.2rem; }
+        .stat-l { font-size: 0.75rem; }
+        .tabs { grid-template-columns: repeat(2, 1fr); }
+        .tab { padding: 12px 14px; font-size: 0.9rem; }
+        .post { padding: 16px; border-radius: 20px; }
+        .p-text { font-size: 0.95rem; margin-left: 0; margin-top: 10px; }
+        .p-tag { margin: 10px 0 8px 0; font-size: 0.75rem; }
+        .p-actions { margin-left: 0; gap: 8px; }
+        .rp-block { border-radius: 20px; padding: 16px; }
+        .rp-block h3 { font-size: 0.95rem; margin-bottom: 12px; }
+        .modal { max-width: 90%; border-radius: 20px; padding: 18px; }
+        .modal h2 { font-size: 1.4rem; }
+        .modal-close { width: 36px; height: 36px; }
+        .mfield input, .mfield textarea { padding: 12px 14px; font-size: 14px; }
+        .mrow { grid-template-columns: 1fr; gap: 10px; }
+        .skill-add-row button, .btn-save, .btn-cancel { padding: 12px 14px; font-size: 0.9rem; min-height: 44px; }
       }
       @media (max-width: 620px) {
-        .shell { padding: 12px; }
-        .profile-top, .profile-id { flex-direction: column; align-items: flex-start; }
-        .stat-row, .tabs, .mrow { grid-template-columns: 1fr; }
-        .p-text, .p-tag, .p-actions { margin-left: 0; }
-        .p-header { flex-direction: column; align-items: flex-start; }
-        .p-time { margin-left: 0; }
+        .shell { padding: 10px; gap: 10px; }
+        .topbar { padding: 10px 12px; border-radius: 18px; }
+        .back-btn { width: 36px; height: 36px; }
+        .banner { min-height: 140px; border-radius: 18px; }
+        .profile-card { border-radius: 18px; padding: 14px; margin-top: -50px; }
+        .profile-top { flex-direction: column; gap: 12px; }
+        .profile-id { flex-direction: column; gap: 12px; }
+        .avatar { width: 88px; height: 88px; border-radius: 20px; font-size: 1.6rem; }
+        .profile-copy h1 { font-size: clamp(1.2rem, 6vw, 2rem); margin-top: 8px; }
+        .p-handle { font-size: 0.85rem; }
+        .p-meta-row { font-size: 0.8rem; }
+        .stat-row { grid-template-columns: 1fr; gap: 8px; }
+        .stat-item { padding: 10px; }
+        .stat-n { font-size: 1.1rem; }
+        .tabs { grid-template-columns: 1fr; }
+        .tab { padding: 10px 12px; font-size: 0.85rem; min-height: 40px; }
+        .post { padding: 14px; }
+        .p-header { flex-direction: column; gap: 10px; }
+        .p-avatar { width: 36px; height: 36px; }
+        .p-text { font-size: 0.9rem; }
+        .p-tag { font-size: 0.7rem; padding: 6px 10px; }
+        .p-actions { width: 100%; gap: 8px; }
+        .act-btn { width: 100%; justify-content: center; }
+        .sidebar { border-radius: 18px; padding: 12px; }
+        .rp { gap: 12px; }
+        .rp-block { padding: 12px; border-radius: 18px; }
+      }
+      @media (max-width: 480px) {
+        .shell { padding: 8px; }
+        .topbar { padding: 8px 10px; }
+        .banner { min-height: 120px; }
+        .avatar { width: 80px; height: 80px; }
+        .profile-copy h1 { font-size: clamp(1.1rem, 7vw, 1.6rem); }
+        .stat-row { gap: 6px; }
+        .stat-item { padding: 8px; }
+        .tabs { gap: 6px; }
+      }
+      @media (max-width: 375px) {
+        .shell { padding: 6px; }
+        .avatar { width: 72px; height: 72px; }
       }
     </style>
   </head>
