@@ -717,13 +717,15 @@ def notifications_view(request):
     # Applications to teams the user leads
     pending_applications = TeamInvite.objects.filter(
         team__leader=request.user, 
-        status="pending"
+        status="pending",
+        invite_type="application"
     ).select_related("user", "team").order_by("-created_at")
 
     # Invites sent directly to the user (if any exist in this flow)
     pending_invites = TeamInvite.objects.filter(
         user=request.user,
-        status="pending"
+        status="pending",
+        invite_type="invite"
     ).select_related("team", "team__leader").order_by("-created_at")
 
     # Replies to user's posts
@@ -809,7 +811,7 @@ def api_team_invite(request, team_id):
     if TeamInvite.objects.filter(team=team, user=invite_user).exists():
         return JsonResponse({"error": "Invite already sent to this user."}, status=400)
 
-    invite = TeamInvite.objects.create(team=team, user=invite_user, message=message)
+    invite = TeamInvite.objects.create(team=team, user=invite_user, message=message, invite_type="invite")
 
     return JsonResponse({
         "id":           invite.id,
@@ -830,8 +832,12 @@ def api_team_invite_respond(request, invite_id):
     
     action = data.get("action", "").strip().lower()
 
-    if request.user != invite.user and request.user != invite.team.leader:
-        return JsonResponse({"error": "You cannot respond to this request."}, status=403)
+    if invite.invite_type == "application":
+        if request.user != invite.team.leader:
+            return JsonResponse({"error": "Only the team leader can respond to this application."}, status=403)
+    else:
+        if request.user != invite.user:
+            return JsonResponse({"error": "You can only respond to invites sent to you."}, status=403)
 
     if invite.status != "pending":
         return JsonResponse({"error": f"Invite is already {invite.status}."}, status=400)
@@ -839,10 +845,15 @@ def api_team_invite_respond(request, invite_id):
     if action == "accept":
         if invite.team.open_slots <= 0:
             return JsonResponse({"error": "Team is full."}, status=400)
+            
+        if invite.user in invite.team.members.all():
+            invite.status = "accepted"
+            invite.save()
+            return JsonResponse({"error": "User is already a member."}, status=400)
 
         invite.status = "accepted"
         invite.save()
-        TeamMember.objects.create(team=invite.team, user=request.user, role="other")
+        TeamMember.objects.get_or_create(team=invite.team, user=invite.user, defaults={"role": "other"})
         
         return JsonResponse({
             "status":     "accepted",
@@ -948,7 +959,8 @@ def api_team_apply(request, team_id):
         team=team,
         user=request.user,
         message=message,
-        status="pending"
+        status="pending",
+        invite_type="application"
     )
 
     return JsonResponse({

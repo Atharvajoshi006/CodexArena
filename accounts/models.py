@@ -249,10 +249,15 @@ class TeamInvite(models.Model):
         ("accepted", "Accepted"),
         ("declined", "Declined"),
     ]
+    INVITE_TYPES = [
+        ("application", "Application"),
+        ("invite", "Invitation"),
+    ]
 
     team       = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="invite_records")
     user       = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_invites")
     status     = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    invite_type = models.CharField(max_length=20, choices=INVITE_TYPES, default="invite")
     message    = models.TextField(blank=True, default="Join our team!")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
