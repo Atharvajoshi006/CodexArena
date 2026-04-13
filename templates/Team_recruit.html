@@ -1612,7 +1612,7 @@ async function sendApplication() {
   }
 
   try {
-    const response = await fetch(`/api/teams/${teamId}/invite/`, {
+    const response = await fetch(`/api/teams/${teamId}/apply/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
