@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -784,6 +784,7 @@
           <a href="/teams/">Teams</a>
           <a href="/blogs/">Blogs</a>
           {% if user.is_authenticated %}
+            <a href="/notifications/">🔔</a>
             <a href="/profile/">{{ user.username }}</a>
             <form method="POST" action="/logout/" style="display:inline;">
               {% csrf_token %}

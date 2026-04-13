@@ -712,6 +712,36 @@ def team_detail_view(request, team_id):
 
 
 @login_required(login_url="/login/")
+def notifications_view(request):
+    """View professional notifications center for current user."""
+    # Applications to teams the user leads
+    pending_applications = TeamInvite.objects.filter(
+        team__leader=request.user, 
+        status="pending"
+    ).select_related("user", "user__profile", "team").order_by("-created_at")
+
+    # Invites sent directly to the user (if any exist in this flow)
+    pending_invites = TeamInvite.objects.filter(
+        user=request.user,
+        status="pending"
+    ).select_related("team", "team__leader").order_by("-created_at")
+
+    # Replies to user's posts
+    post_replies = BlogComment.objects.filter(
+        post__author=request.user
+    ).exclude(author=request.user).select_related("author", "post").order_by("-created_at")[:20]
+
+    ctx = {
+        "pending_applications": pending_applications,
+        "pending_invites": pending_invites,
+        "post_replies": post_replies,
+        "notifications_count": pending_applications.count() + pending_invites.count() + post_replies.count()
+    }
+    return render(request, "notifications.html", ctx)
+
+
+
+@login_required(login_url="/login/")
 @require_POST
 def api_team_create(request):
     """POST /api/teams/create/ — Create a new team."""
@@ -794,14 +824,14 @@ def api_team_invite(request, team_id):
 @login_required(login_url="/login/")
 @require_POST
 def api_team_invite_respond(request, invite_id):
-    """POST /api/teams/invites/<invite_id>/respond/ — Accept or decline a team invite."""
+    """POST /api/teams/invites/<invite_id>/respond/ — Accept or decline a team invite or application."""
     invite = get_object_or_404(TeamInvite, id=invite_id)
     data = _json_body(request)
     
     action = data.get("action", "").strip().lower()
 
-    if request.user != invite.user:
-        return JsonResponse({"error": "You can only respond to invites sent to you."}, status=403)
+    if request.user != invite.user and request.user != invite.team.leader:
+        return JsonResponse({"error": "You cannot respond to this request."}, status=403)
 
     if invite.status != "pending":
         return JsonResponse({"error": f"Invite is already {invite.status}."}, status=400)

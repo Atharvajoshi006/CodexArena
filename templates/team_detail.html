@@ -285,8 +285,13 @@
     </a>
     <nav>
       <a href="/">Home</a>
-      <a href="/teams/">Teams</a>
+      <a href="/hackathons/">Hackathons</a>
       <a href="/blogs/">Blogs</a>
+      <a href="/teams/">Teams</a>
+      {% if user.is_authenticated %}
+        <a href="/notifications/">🔔</a>
+        <a href="/profile/{{ user.username }}/">{{ user.username }}</a>
+      {% endif %}
     </nav>
   </header>
 

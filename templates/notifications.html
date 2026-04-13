@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodexArena - Notifications</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: rgba(8, 18, 34, 0.86);
+        --line: rgba(125, 161, 210, 0.16);
+        --line-strong: rgba(125, 161, 210, 0.3);
+        --text: #edf4ff;
+        --muted: #95a8c6;
+        --accent: #58a6ff;
+        --accent-strong: #2f81f7;
+        --green: #4ade80;
+        --green-soft: rgba(74, 222, 128, 0.12);
+        --red-soft: rgba(248, 113, 113, 0.12);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: "Manrope", sans-serif;
+        background:
+          radial-gradient(circle at 10% 0%, rgba(88,166,255,0.22), transparent 26%),
+          radial-gradient(circle at 85% 18%, rgba(74,222,128,0.12), transparent 22%),
+          linear-gradient(180deg, #08101d 0%, #07111f 48%, #050d18 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient(rgba(88,166,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(88,166,255,0.05) 1px, transparent 1px);
+        background-size: 46px 46px;
+        pointer-events: none;
+      }
+
+      .page-shell {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 22px;
+        border-radius: 20px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.34);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      nav a, nav button {
+        text-decoration: none;
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 600;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      nav a:hover, nav a.active {
+        color: var(--text);
+        border-color: var(--line);
+        background: rgba(255,255,255,0.04);
+      }
+
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header-title h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        letter-spacing: -0.04em;
+      }
+
+      .notif-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--accent-strong);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 12px;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 12px 18px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 700;
+        color: var(--muted);
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .tab.active {
+        background: var(--panel);
+        border: 1px solid var(--line-strong);
+        color: var(--text);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+
+      .tab-content {
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .tab-content.active {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .notif-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        transition: 0.2s ease;
+      }
+
+      .notif-card:hover {
+        border-color: var(--line-strong);
+        transform: translateY(-2px);
+      }
+
+      .notif-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        display: grid;
+        place-items: center;
+        color: white;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+
+      .notif-avatar.reply {
+        background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+      }
+
+      .notif-body {
+        flex: 1;
+      }
+
+      .notif-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .notif-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+
+      .notif-title strong {
+        color: var(--accent);
+      }
+
+      .notif-time {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      
+      .notif-team {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--line);
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+
+      .notif-text {
+        color: var(--text);
+        opacity: 0.9;
+        line-height: 1.6;
+        font-size: 0.95rem;
+        background: rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        border-radius: 12px;
+        border-left: 3px solid var(--line-strong);
+      }
+
+      .notif-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .btn {
+        padding: 10px 18px;
+        border-radius: 12px;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s ease;
+        border: none;
+      }
+
+      .btn-accept {
+        background: var(--green-soft);
+        color: var(--green);
+        border: 1px solid rgba(74, 222, 128, 0.2);
+      }
+
+      .btn-accept:hover {
+        background: var(--green);
+        color: #000;
+      }
+
+      .btn-decline {
+        background: var(--red-soft);
+        color: #f87171;
+        border: 1px solid rgba(248, 113, 113, 0.2);
+      }
+
+      .btn-decline:hover {
+        background: #f87171;
+        color: #000;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--muted);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        border-style: dashed;
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+        opacity: 0.5;
+        margin-bottom: 16px;
+      }
+
+      @media (max-width: 768px) {
+        .page-shell { padding: 12px; }
+        header { flex-direction: column; gap: 12px; padding: 14px; }
+        nav { justify-content: center; width: 100%; }
+        .notif-card { flex-direction: column; gap: 12px; padding: 16px; }
+        .notif-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+        .notif-time { margin-top: 4px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header>
+        <a href="/" class="brand">
+          <span style="font-family: Space Grotesk; font-weight: 800; color: var(--accent);">&lt;/&gt;</span>
+          <strong style="font-size: 0.95rem;">CodexArena</strong>
+        </a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/hackathons/">Hackathons</a>
+          <a href="/blogs/">Blogs</a>
+          <a href="/teams/">Teams</a>
+          <a href="/notifications/" class="active">Notifications</a>
+          {% if user.is_authenticated %}
+            <a href="/profile/{{ user.username }}/">{{ user.username }}</a>
+            <form method="POST" action="/logout/" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit">Sign Out</button>
+            </form>
+          {% endif %}
+        </nav>
+      </header>
+
+      <div class="header-title">
+        <h1>Notifications</h1>
+        {% if notifications_count > 0 %}
+          <span class="notif-badge">{{ notifications_count }}</span>
+        {% endif %}
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-target="tab-requests" onclick="switchTab(this, 'tab-requests')">
+          Team Requests ({{ pending_applications.count|add:pending_invites.count }})
+        </div>
+        <div class="tab" data-target="tab-replies" onclick="switchTab(this, 'tab-replies')">
+          Mentions & Replies ({{ post_replies.count }})
+        </div>
+      </div>
+
+      <div class="tab-content active" id="tab-requests">
+        <!-- Applications from others to join YOUR teams -->
+        {% for app in pending_applications %}
+          <div class="notif-card" id="invite-{{ app.id }}">
+            <div class="notif-avatar">{{ app.user.username|slice:":2"|upper }}</div>
+            <div class="notif-body">
+              <div class="notif-header">
+                <div class="notif-title">
+                  <strong>@{{ app.user.username }}</strong> requested to join <span class="notif-team">{{ app.team.name }}</span>
+                </div>
+                <div class="notif-time">{{ app.created_at|timesince }} ago</div>
+              </div>
+              <div class="notif-text">
+                "{{ app.message }}"
+              </div>
+              <div class="notif-actions">
+                <button class="btn btn-accept" onclick="respondToRequest({{ app.id }}, 'accept')">Approve</button>
+                <button class="btn btn-decline" onclick="respondToRequest({{ app.id }}, 'decline')">Decline</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <!-- Invites from teams to join THEM -->
+        {% for inv in pending_invites %}
+          <div class="notif-card" id="invite-{{ inv.id }}">
+            <div class="notif-avatar">{{ inv.team.name|slice:":2"|upper }}</div>
+            <div class="notif-body">
+              <div class="notif-header">
+                <div class="notif-title">
+                  You were invited to join <strong class="notif-team">{{ inv.team.name }}</strong>
+                </div>
+                <div class="notif-time">{{ inv.created_at|timesince }} ago</div>
+              </div>
+              <div class="notif-text">
+                "{{ inv.message }}"
+              </div>
+              <div class="notif-actions">
+                <button class="btn btn-accept" onclick="respondToRequest({{ inv.id }}, 'accept')">Accept Invite</button>
+                <button class="btn btn-decline" onclick="respondToRequest({{ inv.id }}, 'decline')">Decline</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        {% if pending_applications.count == 0 and pending_invites.count == 0 %}
+          <div class="empty-state">
+            <div class="empty-icon">🤝</div>
+            <h3>No pending requests</h3>
+            <p style="margin-top: 8px;">You're all caught up on your team requests and invites.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="tab-content" id="tab-replies">
+        {% for reply in post_replies %}
+          <div class="notif-card">
+            <div class="notif-avatar reply">{{ reply.author.username|slice:":2"|upper }}</div>
+            <div class="notif-body">
+              <div class="notif-header">
+                <div class="notif-title">
+                  <strong>@{{ reply.author.username }}</strong> replied to your post
+                </div>
+                <div class="notif-time">{{ reply.created_at|timesince }} ago</div>
+              </div>
+              <div class="notif-text">
+                {{ reply.content }}
+              </div>
+              <a href="/profile/{{ user.username }}/#tab-posts" style="display:inline-block; margin-top:12px; color:var(--accent); text-decoration:none; font-size:0.9rem; font-weight:600;">View context →</a>
+            </div>
+          </div>
+        {% empty %}
+          <div class="empty-state">
+            <div class="empty-icon">💬</div>
+            <h3>No new replies</h3>
+            <p style="margin-top: 8px;">When people interact with your posts, you'll see them here.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <script>
+      function getCookie(name) {
+        return document.cookie.split(";").map(c => c.trim()).find(c => c.startsWith(name + "="))?.split("=")[1] || "";
+      }
+
+      function switchTab(el, targetId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        el.classList.add('active');
+        document.getElementById(targetId).classList.add('active');
+      }
+
+      async function respondToRequest(inviteId, action) {
+        try {
+          const res = await fetch(`/api/teams/invites/${inviteId}/respond/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({ action: action })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            const card = document.getElementById(`invite-${inviteId}`);
+            if (card) {
+              card.style.opacity = '0';
+              card.style.transform = 'translateY(10px)';
+              setTimeout(() => card.remove(), 300);
+            }
+          } else {
+            alert(data.error || "An error occurred.");
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Network error.");
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -20,6 +20,7 @@ urlpatterns = [
     path("profile/<str:username>/", views.profile_view,    name="profile_user"),
     path("teams/",                  views.team_recruit_view, name="teams"),
     path("teams/<int:team_id>/",    views.team_detail_view, name="team_detail"),
+    path("notifications/",          views.notifications_view, name="notifications"),
 
     # ── API — BLOGS ───────────────────────────────────────────────────────────
     path("api/blogs/create/", views.api_blog_create, name="api_blog_create"),
