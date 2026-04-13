@@ -262,11 +262,17 @@
     }
 
     @media (max-width: 768px) {
-      .page-shell { padding: 16px; }
-      .team-hero { padding: 24px; }
-      .team-header-content { flex-direction: column; align-items: center; text-align: center; }
-      .section { padding: 24px; }
-      h1 { font-size: 1.8rem; }
+      .page-shell { padding: 12px; }
+      header { top: 12px; padding: 12px 14px; gap: 12px; border-radius: 16px; flex-direction: column; }
+      nav { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+      nav a { flex: 1; text-align: center; padding: 8px 10px; font-size: 0.85rem; }
+      .team-hero { padding: 20px; }
+      .team-header-content { flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+      .team-avatar { width: 90px; height: 90px; font-size: 2rem; }
+      .team-meta { justify-content: center; }
+      .badges { justify-content: center; }
+      .section { padding: 20px; }
+      h1 { font-size: 1.6rem; }
     }
   </style>
 </head>
